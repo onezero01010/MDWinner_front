@@ -17,7 +17,6 @@ const StartChat = () => {
   const chatRef = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
   // 예시: 환자 상태 state (emergency, middle, good)
-  const [patientStatus] = useState<'emergency' | 'middle' | 'good'>('good');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
