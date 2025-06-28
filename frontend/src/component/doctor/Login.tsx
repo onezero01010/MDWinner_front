@@ -5,7 +5,7 @@ const Login = () => {
     const navigate = useNavigate();
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        navigate('/doctor/initialsetting');
+        navigate('/doctor/patient-list');
     };
     
   return (

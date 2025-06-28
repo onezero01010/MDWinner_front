@@ -8,9 +8,16 @@ import Login from './component/doctor/Login';
 import Certification from './component/patient/Certification';
 import Confirmation from './component/patient/Confirmation';
 import StartChat from './component/patient/Chat';
+import PatientList from './component/doctor/PatientList';
+import Reservation from './component/doctor/Reservation';
+import React, { useState } from "react";
 import PatientDetail from './component/doctor/PatientDetail';
 
 function App() {
+  const [appointment, setAppointment] = useState({
+    date: "2024-06-30",
+    time: "11:30",
+  });
 
   return (
     <BrowserRouter>
@@ -21,6 +28,8 @@ function App() {
         <Route path="/patient/certification" element={<Certification />} /> 
         <Route path="/patient/confirmation" element={<Confirmation />} />
         <Route path="/patient/start-chat" element={<StartChat />} />
+        <Route path="/doctor/patient-list" element={<PatientList appointment={appointment} />} />
+        <Route path="/doctor/reservation" element={<Reservation appointment={appointment} setAppointment={setAppointment} />} />
         <Route path="/doctor/patient-detail" element={<PatientDetail />} />
       </Routes>
     </BrowserRouter>
