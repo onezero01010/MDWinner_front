@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, CardContent } from "../../components/ui/card";
+import { toast } from "sonner";
 import { Badge } from "../../components/ui/badge";
 
 interface RedAlertProps {
@@ -13,7 +13,8 @@ interface RedAlertProps {
   gender: string; // 예: "F"
 }
 
-export function RedAlert({
+// sonner 토스트를 띄우는 함수로 export
+export function showAlert({
   source = "EVERYDAYCARE",
   status = "응급",
   statusColor = "bg-red-500",
@@ -23,13 +24,11 @@ export function RedAlert({
   age,
   gender,
 }: RedAlertProps) {
-  return (
-    <Card className="w-full p-4 flex flex-col gap-2">
+  toast.custom((t) => (
+    <div className="w-full max-w-96 p-4 flex flex-col gap-2 bg-white rounded shadow border mx-auto">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2">
-          {/* 출처 아이콘/텍스트 */}
           <span className="text-violet-600 font-bold text-xs flex items-center gap-1">
-            {/* 아이콘 대체: 🩺 */}
             <span role="img" aria-label="care" className="text-lg">🩺</span>
             {source}
           </span>
@@ -48,8 +47,12 @@ export function RedAlert({
       <div className="flex justify-end text-sm text-gray-700 font-medium">
         {patientName} ({age}/{gender})
       </div>
-    </Card>
-  );
+    </div>
+  ));
 }
 
-export default RedAlert;
+// 기존 컴포넌트는 필요 없으면 삭제해도 됩니다.
+export default function RedAlert() {
+  return null;
+}
+
