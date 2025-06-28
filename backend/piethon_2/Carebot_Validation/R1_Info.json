@@ -1,0 +1,10 @@
+{
+  "caseId": "R1",
+  "demographics": {
+    "age": "75세",
+    "sex": "여성"
+  },
+  "recentTreatment": "4일 전 좌측 TKRA 수술",
+  "chiefComplaint": "일상생활 불가능한 말기 무릎 통증",
+  "treatmentGoal": "수술 통한 통증 해소·기능 회복"
+}

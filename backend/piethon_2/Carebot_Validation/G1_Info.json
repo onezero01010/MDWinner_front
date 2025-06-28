@@ -1,0 +1,10 @@
+{
+  "caseId": "G1",
+  "demographics": {
+    "age": "65세",
+    "sex": "여성"
+  },
+  "recentTreatment": "2일 전 NSAIDs",
+  "chiefComplaint": "가끔씩 발생하는 경미한 무릎 통증",
+  "treatmentGoal": "경미한 통증 완화"
+}
