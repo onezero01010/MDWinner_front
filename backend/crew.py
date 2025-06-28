@@ -3,6 +3,7 @@ from crewai.tools import BaseTool
 from pydantic import BaseModel, Field
 from crewai.knowledge.source.crew_docling_source import CrewDoclingSource
 from crewai.knowledge.source.pdf_knowledge_source import PDFKnowledgeSource
+import os
 
 llm = LLM(
     model="openai/gpt-4o-mini", # call model by provider/model_name
@@ -10,19 +11,29 @@ llm = LLM(
     temperature = 0.7
 )
 
-content_source = CrewDoclingSource(
-    file_paths=[
-        "https://pitch-medicine-b79.notion.site/ca1e6306c4554d11b329730120c361e5?v=0f6d4399195248759dc557909b9f8c66",
-    ],
-)
+# tell_knowledge = CrewDoclingSource(
+#     file_paths=[
+#         "https://pitch-medicine-b79.notion.site/ca1e6306c4554d11b329730120c361e5?v=0f6d4399195248759dc557909b9f8c66",
+#     ],
+# )
 
-pdf_source = PDFKnowledgeSource(
-    file_paths=["골관절염.pdf",
-                "Hyaluronic acid injection_severity.pdf",
-                "NSAIDs_severity.pdf",
-                "Steroid injection_severity.pdf",
-                "TKRA_severity.pdf"]
-)
+# alert_knowledge = PDFKnowledgeSource(
+#     file_paths=[
+#         "alert/골관절염.pdf",
+#         "alert/Hyaluronic acid injection_severity.pdf",
+#         "alert/NSAIDs_severity.pdf",
+#         "alert/Steroid injection_severity.pdf",
+#         "alert/TKRA_severity.pdf"
+#     ]
+# )
+
+# alert_knowledge = PDFKnowledgeSource(
+#     file_paths = [os.path.join("alert", fname) for fname in os.listdir("knowledge/alert")]
+# )
+
+# diagnosis_knowledge = PDFKnowledgeSource(
+#     file_paths = [os.path.join("diagnosis", fname) for fname in os.listdir("knowledge/diagnosis")]
+# )
 
 class CrewInput(BaseModel):
     initial_message: str = Field(..., description="Initial message from the person")
@@ -144,41 +155,10 @@ class Piethon2():
             추가 중재가 필요할 수 있는 위험 신호를 강조하는 것이 당신의 업무입니다.
             """,
             verbose=True,
-            llm=llm,
-        )
-
-    def agent_tell(self) -> Agent:
-        return Agent(
-            role="Patient Communicator",
-            goal="Send diagnosis & action plan back to patient",
-            backstory="Convert medical insights into simple guidance",
-            verbose=True,
-            llm = llm
+            llm = llm,
+            # knowledge_sources=[diagnosis_knowledge]
         )
         
-
-        
-    def agent_doctor_summary(self) -> Agent:
-        return Agent(
-            role="Medical Summary Specialist / 의료진 요약 전문가",
-            goal="""
-            English: Provide concise, structured, and clinically relevant summaries tailored for physician review in EMR systems
-            Korean: EMR 시스템에서 의사 검토를 위해 맞춤화된 간결하고 구조화된 임상적으로 관련성 높은 요약을 제공합니다
-            """,
-            backstory="""
-            English: As an experienced clinical assistant familiar with EMR standards, you specialize in synthesizing patient-reported data, diagnostic insights, and clinical recommendations into structured, physician-friendly summaries. 
-            Your reports enable swift decision-making and facilitate efficient follow-up actions. You emphasize clarity, brevity, medical accuracy, and actionable insights, ensuring summaries integrate seamlessly with hospital EMR workflows.
-            
-            Korean: EMR 표준에 익숙한 숙련된 임상 보조자로서, 환자 보고 데이터, 진단 통찰 및 임상 권장사항을 
-            구조화된 의사 친화적 요약으로 종합하는 것을 전문으로 합니다. 
-            당신의 보고서는 신속한 의사결정을 가능하게 하고 효율적인 후속 조치를 촉진합니다. 
-            명확성, 간결성, 의학적 정확성 및 실행 가능한 통찰을 강조하여 요약이 병원 EMR 워크플로우와 원활하게 통합되도록 합니다.
-            """,
-            verbose=True,
-            llm=llm
-        )
-
-
     def agent_alert(self) -> Agent:
         return Agent(
             role="Emergency Risk Assessor / 응급 위험도 평가 전문가",
@@ -215,10 +195,69 @@ class Piethon2():
             분류는 주의와 임상적 관련성의 균형을 맞춰야 하며, 의학적 근거로 설명 가능해야 합니다.
             """,
             verbose=True,
-            llm=llm,
-            knowledge_sources=[pdf_source]
+            llm = llm,
+            # knowledge_sources=[alert_knowledge]
         )
-    
+        
+    def agent_doctor_summary(self) -> Agent:
+        return Agent(
+            role="Medical Summary Specialist / 의료진 요약 전문가",
+            goal="""
+            English: Provide concise, structured, and clinically relevant summaries tailored for physician review in EMR systems
+            Korean: EMR 시스템에서 의사 검토를 위해 맞춤화된 간결하고 구조화된 임상적으로 관련성 높은 요약을 제공합니다
+            """,
+            backstory="""
+            English: As an experienced clinical assistant familiar with EMR standards, you specialize in synthesizing patient-reported data, diagnostic insights, and clinical recommendations into structured, physician-friendly summaries. 
+            Your reports enable swift decision-making and facilitate efficient follow-up actions. You emphasize clarity, brevity, medical accuracy, and actionable insights, ensuring summaries integrate seamlessly with hospital EMR workflows.
+            
+            Korean: EMR 표준에 익숙한 숙련된 임상 보조자로서, 환자 보고 데이터, 진단 통찰 및 임상 권장사항을 
+            구조화된 의사 친화적 요약으로 종합하는 것을 전문으로 합니다. 
+            당신의 보고서는 신속한 의사결정을 가능하게 하고 효율적인 후속 조치를 촉진합니다. 
+            명확성, 간결성, 의학적 정확성 및 실행 가능한 통찰을 강조하여 요약이 병원 EMR 워크플로우와 원활하게 통합되도록 합니다.
+            """,
+            verbose=True,
+            llm = llm
+        )
+
+    def agent_explain(self) -> Agent:
+        return Agent(
+            role=(
+                "당신은 외래 진료실에서 진단 설명과 초기 질문 답변을 담당하는 숙련된 간호사입니다. "
+                "의료진의 진단을 환자가 이해하기 쉽게 설명하고, 사전에 수집된 환자의 질문에 답변합니다."
+            ),
+            goal=(
+                "다음 medical diagnosis를 기반으로 환자에게 쉽게 설명하고,"
+                "CrewInput으로 주어지는 질문 목록에 대해 차근차근 답변하세요. "
+                "설명과 답변이 끝난 뒤에는 '추가적인 질문이 있으신가요?'라고 물어보며 대화를 이어갈 준비를 하세요."
+            ),
+            backstory=(
+                "당신은 수년간 정형외과 외래 간호사로서 진단 설명과 환자 응대 경험이 풍부합니다. "
+                "환자가 불안해하지 않도록 공감적이고 따뜻한 말투를 사용하며, 어려운 용어는 쉽게 풀어줍니다."
+            ),
+            verbose=True,
+            llm=llm,
+            # knowledge_sources=[tell_knowledge]
+        )
+
+    def agent_qna(self) -> Agent:
+        return Agent(
+            role=(
+                "당신은 환자가 추가로 묻는 질문이나 요구사항을 계속해서 응답하는 전문 간호사입니다. "
+                "의료진의 진단을 참고하며, 이전 대화 내용도 함께 고려해 답변하세요."
+            ),
+            goal=(
+                "환자가 명시적으로 대화를 종료하기 전까지, "
+                "추가 질문이나 요청에 대해 계속해서 응답하고, "
+            ),
+            backstory=(
+                "당신은 외래 간호사로서 환자의 재질문을 빠짐없이 파악하고 답변을 이어가는 숙련된 커뮤니케이터입니다. "
+                "환자가 불안하거나 놓치는 부분이 없도록 공감적인 태도로 안내합니다."
+            ),
+            verbose=True,
+            llm=llm,
+            # knowledge_sources=[tell_knowledge]
+        )
+
     def task_ask_and_query(self) -> Task:
         return Task(
             name="증상 정보 수집",
@@ -270,29 +309,7 @@ class Piethon2():
             - recommendations: 임상의를 위한 다음 단계 제안
             """,
             agent=self.agent_diagnosis(),
-            context=[self.task_ask_and_query()]
-        )
-
-    def task_tell_patient(self) -> Task:
-        return Task(
-            description=(
-                "Review the patient’s demographic info (age, sex), initial symptoms, treatment and its intent, KL grade, "
-                "post-treatment symptom details, follow-up dialogue, and the diagnosis agent’s output. "
-                "Using all of this information, classify the patient's current risk level into one of three categories:\n"
-                "- Green: no immediate treatment needed, safe for observation.\n"
-                "- Yellow: not urgent now, but requires monitoring or clinic visit if symptoms worsen.\n"
-                "- Red: urgent, patient must seek medical care immediately.\n"
-                "Base your classification on clinical reasoning and medical red flag thresholds. "
-                "Err on the side of caution, but avoid false alarms. Justify your decision with concise medical rationale."
-            ),
-            expected_output="""
-            다음 필드를 포함하는 사전(dictionary):
-            - severity_level: ['green', 'yellow', 'red'] 중 하나
-            - reasoning: 이 심각도 수준이 할당된 이유에 대한 임상적 설명
-            - next_steps: 심각도에 따른 환자 또는 의사 대상 권장 사항
-            """,
-            agent=self.agent_tell(),
-            context = [self.task_diagnose()]
+            context = [self.task_ask_and_query()]
         )
         
     def task_send_alert(self) -> Task:
@@ -323,8 +340,7 @@ class Piethon2():
             - next_steps: 심각도에 따른 환자 또는 의사 대상 권장 사항
             """,
             agent=self.agent_alert(),
-            context=[self.task_diagnose()],
-            knowledge_sources=[pdf_source]
+            context = [self.task_diagnose()]
         )
         
     def task_summarize_for_doctor(self) -> Task:
@@ -368,29 +384,67 @@ class Piethon2():
             - 명확하게 표시된 알림 상태 (Red, Yellow, Green) 및 긴급도 수준의 근거
             """,
             agent=self.agent_doctor_summary(),
-            context=[self.task_diagnose(), self.task_send_alert()]
+            context = [self.task_diagnose(), self.task_send_alert()]
         )
 
-        def crew(self) -> Crew:
-            return Crew(
-                agents=[
-                    self.agent_ask(),
-                    self.agent_diagnosis(),
-                    self.agent_tell(),
-                    self.agent_alert(),
-                    self.agent_doctor_summary(),
-                ],
-                tasks=[
-                    self.task_ask_and_query(),
-                    self.task_diagnose(),
-                    self.task_tell_patient(),
-                    self.task_send_alert(),
-                    self.task_summarize_for_doctor(),
-                ],
-                process=Process.sequential,
-                verbose=False,
-                memory=False
-            )
+    def task_explain(self) -> Task:
+        return Task(
+            name="진단 설명 및 초기 질문 답변",
+            description=(
+                "knowledge_source(medical_diagnosis)를 기반으로 환자가 이해할 수 있도록 진단을 설명하고, "
+                "CrewInput으로 제공되는 질문 목록에 대해 답변하세요. "
+                "마지막에는 '추가적인 질문이 있으신가요?'라는 문구로 후속 질문을 유도합니다. "
+                "추가 질문이 들어올 때를 대비해 따뜻하고 공감적인 간호사 어투를 유지하세요."
+            ),
+            expected_output=(
+                "진단 설명 + query 답변 + 마지막에 '추가적인 질문이 있으신가요?' 로 끝나는 한 차례 메시지."
+            ),
+            output_json=None,
+            agent=self.agent_explain(),
+            human_input=False,
+            context = [self.task_diagnose()]
+        )
+    
+    def task_qna(self) -> Task:
+        return Task(
+            name="추가 질문 응답",
+            description=(
+                "환자가 추가로 묻거나 요청하는 내용을 knowledge_source(medical diagnosis)와 "
+                "이전 대화 내용을 기반으로 계속해서 대답하세요. "
+                "환자가 '대화를 종료합니다' 등 종료의사를 명시하기 전까지 계속 질의응답을 이어갑니다. "
+                "공감적이고 따뜻한 간호사 어투를 사용하며, 필요 시 질문을 다시 확인해도 됩니다."
+            ),
+            expected_output=(
+                "추가 질문이나 요청이 들어올 때마다 적절히 답변하며, 환자가 끝내겠다고 할 때까지 이어가는 다중턴 대화."
+            ),
+            output_json=None,
+            agent=self.agent_qna(),
+            human_input=True,
+            context = [self.task_diagnose()]
+        )
+
+    def crew(self) -> Crew:
+        return Crew(
+            agents=[
+                self.agent_ask(),
+                self.agent_diagnosis(),
+                self.agent_alert(),
+                self.agent_doctor_summary(),
+                self.agent_explain(),
+                self.agent_qna()
+            ],
+            tasks=[
+                self.task_ask_and_query(),
+                self.task_diagnose(),
+                self.task_send_alert(),
+                self.task_summarize_for_doctor(),
+                self.task_explain(),
+                self.task_qna()
+            ],
+            process=Process.sequential,
+            verbose=False,
+            memory=False
+        )
 
 if __name__ == "__main__":
     initial = input("\n[System] Please start by introducing symptom:\n> ")
