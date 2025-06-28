@@ -1,4 +1,4 @@
-import React from "react";
+// import React from "react";
 import { toast } from "sonner";
 import { Badge } from "../../components/ui/badge";
 
@@ -24,7 +24,7 @@ export function showAlert({
   age,
   gender,
 }: RedAlertProps) {
-  toast.custom((t) => (
+  toast.custom((_) => (
     <div className="w-full max-w-96 p-4 flex flex-col gap-2 bg-white rounded shadow border mx-auto">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2">

@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-  DialogClose,
 } from "../../components/ui/dialog";
 import { Checkbox } from "../../components/ui/checkbox";
 import { Input } from "../../components/ui/input";

@@ -1,8 +1,7 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { Button } from "../../components/ui/button";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "../../components/ui/accordion";
 import { ArrowLeft } from "lucide-react";
-import { showAlert } from "./RedAlert";
 import ActionModal from "./ActionModal";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../components/ui/tooltip";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../../components/ui/tabs";
@@ -26,20 +25,20 @@ type ChatMessage = {
 };
 
 export default function PatientDetail() {
-    const [chatLog, setChatLog] = useState<ChatMessage[]>([
+    const [chatLog] = useState<ChatMessage[]>([
         {question: "안녕하세요", answer: "네, 안녕하세요!"}
     ]);
     const [actionOpen, setActionOpen] = useState(false);
     const [tooltipOpen, setTooltipOpen] = useState(false);
     const [tab, setTab] = useState("info");
     // 예약 정보 상태 추가
-    const [appointment, setAppointment] = useState({ date: "2024-06-26", time: "08:00 PM" });
+    const [_, setAppointment] = useState({ date: "2024-06-26", time: "08:00 PM" });
     const tooltipTimeout = useRef<NodeJS.Timeout | null>(null);
     const navigate = useNavigate();
 
-    const handleAction = () => {
-        setActionOpen(true);
-    };
+    // const handleAction = () => {
+    //     setActionOpen(true);
+    // };
 
     const handleTooltipClick = () => {
         setTooltipOpen(true);
@@ -151,7 +150,7 @@ export default function PatientDetail() {
           </div>
         </TabsContent>
         <TabsContent value="reservation">
-          <Reservation appointment={appointment} setAppointment={setAppointment} />
+          <Reservation setAppointment={setAppointment} />
         </TabsContent>
         <TabsContent value="chat">
           <ChatLog externalMessages={chatLog}/>
