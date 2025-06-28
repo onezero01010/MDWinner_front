@@ -52,6 +52,17 @@ const StartChat = () => {
     inputRef.current?.focus();
   };
 
+  const handleQuickSend = (text: string) => {
+    const newMessage: ChatMessage = {
+      question: text,
+      answer: "이것은 답변입니다.",
+    };
+    setMessages([...messages, newMessage]);
+    setInputValue("");
+    setFile(null); // 파일 첨부도 초기화(필요시)
+    inputRef.current?.focus();
+  };
+
   // 새 메시지 추가 시 스크롤 하단으로 이동
   useEffect(() => {
     if (lastMessageRef.current) {
@@ -76,7 +87,7 @@ const StartChat = () => {
                 style={{ width: `${Math.min((messages.length * 2) * 10, 100)}%` }}
               />
             </div>
-            <div className="text-sm text-gray-500 mt-2 text-center w-80 mx-auto">
+            <div className="text-sm text-gray-500 mt-2 text-center w-80 mx-auto mb-2">
               추가 정보를 수집 중입니다.
             </div>
           </div>
@@ -85,7 +96,7 @@ const StartChat = () => {
       {/* 중앙 안내/채팅 영역 (스크롤) */}
       <div
         ref={chatRef}
-        className="flex-1 min-h-0 flex flex-col items-start justify-start w-full pt-4 overflow-y-auto mb-8"
+        className="flex-1 min-h-0 flex flex-col items-start justify-start w-full pt-4 overflow-y-auto mb-8 mt-2"
         style={{ paddingTop: '120px', paddingBottom: messages.length === 0 ? '120px' : '80px' }}
       >
         {messages.length === 0 ? (
@@ -94,7 +105,7 @@ const StartChat = () => {
               안녕하세요, 송원영님!<br /><br />
               혹시 문제가 있다면 저에게 말씀해주시면 적절한 대응 방법을 알려드릴 수 있어요!
             </div>
-            <div className="w-full flex justify-center items-center py-4 mt-8">
+            <div className="w-full flex justify-center items-center py-4 mt-6">
               <div className="max-w-full w-full">
               <Carousel>
                 <CarouselContent className="gap-4">
@@ -172,7 +183,7 @@ const StartChat = () => {
         )}
       </div>
       {/* 하단 고정 입력창/버튼 */}
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full bg-white px-4 pb-4 pt-2 flex flex-col gap-2 z-10">
+      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full bg-transparent px-4 pb-4 pt-1 flex flex-col gap-2 z-10">
         {file && (
           <div className="mt-2 flex flex-col items-center">
             <span className="text-sm text-gray-600">{file.name}</span>
@@ -184,8 +195,18 @@ const StartChat = () => {
         {messages.length === 0 && (
           <>
             <div className="overflow-x-auto whitespace-nowrap hide-scrollbar">
-              <button className="inline-block bg-white border border-gray rounded-full px-4 py-2 text-sm shadow-sm mx-2">체온 올리는 법, 열도 동반인가요?</button>
-              <button className="inline-block bg-white border border-gray rounded-full px-4 py-2 text-sm shadow-sm mx-2">이런 복약방법은 어떤 것이 있나요?</button>
+              <button
+                className="inline-block bg-transparent border border-gray rounded-full px-4 py-2 text-sm shadow-sm mx-2"
+                onClick={() => handleQuickSend("체온 올리는 법, 열도 동반인가요?")}
+              >
+                체온 올리는 법, 열도 동반인가요?
+              </button>
+              <button
+                className="inline-block bg-transparent border border-gray rounded-full px-4 py-2 text-sm shadow-sm mx-2"
+                onClick={() => handleQuickSend("이런 복약방법은 어떤 것이 있나요?")}
+              >
+                이런 복약방법은 어떤 것이 있나요?
+              </button>
             </div>
           </>
         )}
