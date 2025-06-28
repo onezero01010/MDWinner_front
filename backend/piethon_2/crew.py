@@ -7,10 +7,6 @@ import os
 import json
 
 
-os.environ["CHROMA_OPENAI_API_KEY"] = ""
-os.environ["OPENAI_API_KEY"] = ""
-
-
 llm = LLM(
     model="openai/gpt-4o-mini", # call model by provider/model_name
     # model="gemini/gemini-1.5-flash",
@@ -203,7 +199,9 @@ agent_diagnosis = Agent(
         """,
         verbose=True,
         llm = llm,
-        knowledge_sources=[diagnosis_knowledge]
+        knowledge_sources=[diagnosis_knowledge],
+        reasoning=True,
+        max_reasoning_attempts=3
     )
     
 agent_alert = Agent(
@@ -246,7 +244,9 @@ agent_alert = Agent(
         """,
         verbose=True,
         llm = llm,
-        knowledge_sources=[alert_knowledge]
+        knowledge_sources=[alert_knowledge],
+        easoning=True,
+        max_reasoning_attempts=3
     )
     
 agent_doctor_summary=Agent(
@@ -460,7 +460,7 @@ task_qna= Task(
             "공감적이고 따뜻한 간호사 어투를 사용하며, 필요 시 질문을 다시 확인해도 됩니다."
         ),
         expected_output=(
-            "추가 질문이나 요청이 들어올 때마다 적절히 답변하며, 환자가 끝내겠다고 할 때까지 이어가는 다중턴 대화."
+            "추가 질문이나 요청이 들어올 때마다 적절히 답변하며, 환자가 끝내겠다고 할 때까지 이어가는 다중턴 한글 대화."
         ),
         output_json=None,
         agent=agent_qna,
@@ -493,10 +493,10 @@ crew= Crew(
 if __name__ == "__main__":
     initial = input("\n[System] Please start by introducing symptom:\n> ")
     
-    with open('Carebot_Validation/G1_SC.json', encoding='utf-8') as f:
+    with open('Carebot_Validation/Y2_SC.json', encoding='utf-8') as f:
         sc_data = json.load(f)
 
-    with open('Carebot_Validation/G1_Info.json', encoding='utf-8') as f:
+    with open('Carebot_Validation/Y2_Info.json', encoding='utf-8') as f:
         background_info = json.load(f)
 
 
