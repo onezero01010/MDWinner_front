@@ -7,11 +7,10 @@ import { ScrollArea } from "../../components/ui/scroll-area";
 import { Star, Calendar, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { Patient } from "../Patient";
+import { dummyPatients } from "../Patient";
 
 export default function PatientListPage({
   patients = dummyPatients,
-}: {
-  patients?: Patient[];
 }) {
   const [patientList, setPatientList] = useState<Patient[]>(patients);
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -56,12 +55,12 @@ export default function PatientListPage({
         <TabsList className="grid w-full grid-cols-3 gap-2">
           <TabsTrigger value="emergency">
             <span className="flex items-center gap-1">
-              🚨응급 <Badge className="bg-red-600 text-white">{patientList.filter(p => p.emergency === 2 && !p.read).length}</Badge>
+              응급 <Badge className="bg-red-600 text-white">{patientList.filter(p => p.emergency === 2 && !p.read).length}</Badge>
             </span>
           </TabsTrigger>
           <TabsTrigger value="warning">
             <span className="flex items-center gap-1">
-              ⚠️경증 <Badge className="bg-yellow-600 text-white">{patientList.filter(p => p.emergency === 1 && !p.read).length}</Badge>
+              경증 <Badge className="bg-yellow-600 text-white">{patientList.filter(p => p.emergency === 1 && !p.read).length}</Badge>
             </span>
           </TabsTrigger>
           <TabsTrigger value="etc">
@@ -103,7 +102,7 @@ export default function PatientListPage({
                   <br />
                 </div>
                 <div className="text-right">
-                  <p className="text-sm">{patient.cc}</p>
+                  <p className="text-sm font-semibold">{patient.cc}</p>
                   <p className="text-red-600 font-semibold">
                     {patient["red-flag"]}
                   </p>
@@ -116,7 +115,7 @@ export default function PatientListPage({
                 <Button
                   size="lg"
                   variant="default"
-                  className="flex-1 rounded-none border-r"
+                  className="flex-1 rounded-lg border-r"
                   onClick={(e) => {
                     e.stopPropagation();
                     navigate(`/doctor/patient-detail/${patient.id}`);
@@ -139,7 +138,7 @@ export default function PatientListPage({
                 <Button
                   size="lg"
                   variant="default"
-                  className="flex-1 rounded-none"
+                  className="flex-1 rounded-lg"
                   onClick={(e) => {
                     e.stopPropagation();
                     navigate("/doctor/reservation");
@@ -155,7 +154,7 @@ export default function PatientListPage({
 
       {/* Footer */}
       <div className="bg-white p-2 flex justify-around">
-        <div className="flex flex-col items-center text-blue-500">
+        <div className="flex flex-col items-center text-[#8E34FB]">
           <Star size={20} />
           <span className="text-xs">환자 목록</span>
         </div>
@@ -176,10 +175,4 @@ export default function PatientListPage({
       </div>
     </div>
   );
-}
-
-// 파일 하단에, patients prop이 없을 때 더미 데이터로 렌더링
-// (예시: 개발/테스트용)
-export function PatientListPageWithDummy() {
-  return <PatientListPage patients={dummyPatients} />;
 }
