@@ -22,7 +22,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Toaster position="top-center" richColors />
+      <Toaster position="top-center" />
       <Routes>
         <Route path="/" element={<LogoPage />} />
         <Route path="/patient/info" element={<Information />} />

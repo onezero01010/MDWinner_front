@@ -25,7 +25,7 @@ export function showAlert({
   gender,
 }: RedAlertProps) {
   toast.custom((t) => (
-    <div className="w-full p-4 flex flex-col gap-2 bg-white rounded shadow border">
+    <div className="w-full max-w-96 p-4 flex flex-col gap-2 bg-white rounded shadow border mx-auto">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2">
           <span className="text-violet-600 font-bold text-xs flex items-center gap-1">
