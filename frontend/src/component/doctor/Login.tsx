@@ -32,13 +32,7 @@ const Login = () => {
           />
         </div>
         <div className="flex justify-end">
-          <button
-            type="button"
-            className="text-xs text-gray-400 hover:text-gray"
-            onClick={() => navigate('/doctor/register')}
-          >
-            회원가입하기
-          </button>
+          <button type="button" className="text-xs text-gray-400 hover:text-gray">회원가입하기</button>
         </div>
         <button
           type="submit"
