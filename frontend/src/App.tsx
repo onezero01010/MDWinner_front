@@ -7,7 +7,7 @@ import Information from './component/patient/Information';
 import Login from './component/doctor/Login';
 import Certification from './component/patient/Certification';
 import Confirmation from './component/patient/Confirmation';
-import StartChat from './component/patient/StartChat';
+import StartChat from './component/patient/Chat';
 
 function App() {
 

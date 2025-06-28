@@ -34,7 +34,7 @@ const Information = () => {
         </div>
         <button
           type="submit"
-          className="mt-4 w-full py-3 bg-purple text-white rounded-lg font-semibold text-lg hover:bg-purple/90 transition-colors"
+          className="fixed bottom-4 left-1/2 -translate-x-1/2 w-full max-w-xs py-3 bg-purple text-white rounded-lg font-semibold text-lg hover:bg-purple/90 transition-colors z-10 mb-2"
         >
           확인
         </button>

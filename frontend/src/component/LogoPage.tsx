@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const LogoPage = () => {
   const navigate = useNavigate();
-  const [isDoctor, setIsDoctor] = useState(false);
+  const [isDoctor] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
