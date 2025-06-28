@@ -8,6 +8,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../../components/ui/tabs";
 import Reservation from "./Reservation";
 import ChatLog from "./ChatLog";
+import { useNavigate } from "react-router-dom";
 
 const patient = {
   name: "송원영",
@@ -34,6 +35,7 @@ export default function PatientDetail() {
     // 예약 정보 상태 추가
     const [appointment, setAppointment] = useState({ date: "2024-06-26", time: "08:00 PM" });
     const tooltipTimeout = useRef<NodeJS.Timeout | null>(null);
+    const navigate = useNavigate();
 
     const handleAction = () => {
         setActionOpen(true);
@@ -46,6 +48,7 @@ export default function PatientDetail() {
     };
 
     const handleRedAlert = () => {
+        navigate('/doctor/patient-list')
         // showAlert({
         //     title: "의식 저하",
         //     description: "6시간 전 발생, 서서히 진행",
