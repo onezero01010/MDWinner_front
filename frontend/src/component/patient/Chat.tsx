@@ -2,10 +2,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import './hideScrollbar.css'; // 스크롤바 숨김용 CSS import (없으면 생성)
 import { Carousel, CarouselContent, CarouselItem } from "../../components/ui/carousel";
 import { CalendarIcon } from 'lucide-react';
+import { Input } from "../../components/ui/input";
+import { Button } from "../../components/ui/button";
 
 type ChatMessage = {
   question: string;
   answer: string;
+  imageUrl?: string; // 이미지가 있을 경우
 };
 
 const StartChat = () => {
@@ -14,8 +17,9 @@ const StartChat = () => {
   const chatRef = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
   // 예시: 환자 상태 state (emergency, middle, good)
-  const [patientStatus] = useState<'emergency' | 'middle' | 'good'>('good');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [file, setFile] = useState<File | null>(null);
 
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,6 +33,33 @@ const StartChat = () => {
       setMessages([...messages, { question: inputValue, answer }]);
       setInputValue('');
     }
+  };
+
+  const handleSend = () => {
+    if (inputValue.trim() !== "" || file) {
+      const newMessage: ChatMessage = {
+        question: inputValue,
+        answer: "이것은 답변입니다.",
+      };
+      if (file && file.type.startsWith("image/")) {
+        newMessage.imageUrl = URL.createObjectURL(file);
+      }
+      setMessages([...messages, newMessage]);
+      setInputValue("");
+      setFile(null); // 미리보기 제거
+    }
+    inputRef.current?.focus();
+  };
+
+  const handleQuickSend = (text: string) => {
+    const newMessage: ChatMessage = {
+      question: text,
+      answer: "이것은 답변입니다.",
+    };
+    setMessages([...messages, newMessage]);
+    setInputValue("");
+    setFile(null); // 파일 첨부도 초기화(필요시)
+    inputRef.current?.focus();
   };
 
   // 새 메시지 추가 시 스크롤 하단으로 이동
@@ -55,7 +86,7 @@ const StartChat = () => {
                 style={{ width: `${Math.min((messages.length * 2) * 10, 100)}%` }}
               />
             </div>
-            <div className="text-sm text-gray-500 mt-2 text-center w-80 mx-auto">
+            <div className="text-sm text-gray-500 mt-2 text-center w-80 mx-auto mb-2">
               추가 정보를 수집 중입니다.
             </div>
           </div>
@@ -64,7 +95,7 @@ const StartChat = () => {
       {/* 중앙 안내/채팅 영역 (스크롤) */}
       <div
         ref={chatRef}
-        className="flex-1 min-h-0 flex flex-col items-start justify-start w-full pt-4 overflow-y-auto mb-8"
+        className="flex-1 min-h-0 flex flex-col items-start justify-start w-full pt-4 overflow-y-auto mb-8 mt-2"
         style={{ paddingTop: '120px', paddingBottom: messages.length === 0 ? '120px' : '80px' }}
       >
         {messages.length === 0 ? (
@@ -73,7 +104,7 @@ const StartChat = () => {
               안녕하세요, 송원영님!<br /><br />
               혹시 문제가 있다면 저에게 말씀해주시면 적절한 대응 방법을 알려드릴 수 있어요!
             </div>
-            <div className="w-full flex justify-center items-center py-4 mt-8">
+            <div className="w-full flex justify-center items-center py-4 mt-6">
               <div className="max-w-full w-full">
               <Carousel>
                 <CarouselContent className="gap-4">
@@ -125,8 +156,15 @@ const StartChat = () => {
               <React.Fragment key={idx}>
                 {/* 내 메시지(오른쪽, 흰색) */}
                 <div className="flex justify-end">
-                  <div className="bg-white text-gray-900 rounded-2xl rounded-tr-md px-4 py-2 shadow border border-gray max-w-[70%]">
+                  <div className="bg-white text-gray-900 rounded-2xl rounded-tr-md px-4 py-2 shadow border border-gray max-w-[70%] flex flex-col items-end">
                     {msg.question}
+                    {msg.imageUrl && (
+                      <img
+                        src={msg.imageUrl}
+                        alt="첨부 이미지"
+                        className="max-w-[200px] max-h-40 mt-2 rounded-lg border"
+                      />
+                    )}
                   </div>
                 </div>
                 {/* 답변(왼쪽, 보라색) */}
@@ -144,31 +182,69 @@ const StartChat = () => {
         )}
       </div>
       {/* 하단 고정 입력창/버튼 */}
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full bg-white px-4 pb-4 pt-2 flex flex-col gap-2 z-10">
-        {/* 환자 상태 원 3개 */}
-        {messages.length > 0 && (
-            <div className="flex items-center mt-2">
-                <div className={`w-5 h-5 rounded-full mr-1 ${patientStatus === 'emergency' ? 'bg-red-500' : 'bg-gray'}`}></div>
-                <div className={`w-5 h-5 rounded-full mr-1 ${patientStatus === 'middle' ? 'bg-yellow-400' : 'bg-gray'}`}></div>
-                <div className={`w-5 h-5 rounded-full mr-2 ${patientStatus === 'good' ? 'bg-green-500' : 'bg-gray'}`}></div>
-            </div>
+      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full bg-transparent px-4 pb-4 pt-1 flex flex-col gap-2 z-10">
+        {file && (
+          <div className="mt-2 flex flex-col items-center">
+            <span className="text-sm text-gray-600">{file.name}</span>
+            {file.type.startsWith('image/') && (
+              <img src={URL.createObjectURL(file)} alt="preview" className="max-h-16 rounded-lg border mt-2" />
+            )}
+          </div>
         )}
         {messages.length === 0 && (
           <>
             <div className="overflow-x-auto whitespace-nowrap hide-scrollbar">
-              <button className="inline-block bg-white border border-gray rounded-full px-4 py-2 text-sm shadow-sm mx-2">체온 올리는 법, 열도 동반인가요?</button>
-              <button className="inline-block bg-white border border-gray rounded-full px-4 py-2 text-sm shadow-sm mx-2">이런 복약방법은 어떤 것이 있나요?</button>
+              <button
+                className="inline-block bg-transparent border border-gray rounded-full px-4 py-2 text-sm shadow-sm mx-2"
+                onClick={() => handleQuickSend("체온 올리는 법, 열도 동반인가요?")}
+              >
+                체온 올리는 법, 열도 동반인가요?
+              </button>
+              <button
+                className="inline-block bg-transparent border border-gray rounded-full px-4 py-2 text-sm shadow-sm mx-2"
+                onClick={() => handleQuickSend("이런 복약방법은 어떤 것이 있나요?")}
+              >
+                이런 복약방법은 어떤 것이 있나요?
+              </button>
             </div>
           </>
         )}
-        <input
-          type="text"
-          placeholder="메시지를 입력하세요"
-          className="h-12 w-full border border-gray rounded-full px-4 focus:outline-none focus:ring-2 focus:ring-purple text-base mt-4"
-          value={inputValue}
-          onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
-        />
+        <div className="flex items-center gap-2 mt-4">
+          <div className="relative w-full">
+            {/* input 왼쪽에 아이콘(absolute) */}
+            <label className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center cursor-pointer m-0">
+              <input
+                type="file"
+                className="hidden"
+                onChange={e => {
+                  if (e.target.files && e.target.files[0]) {
+                    setFile(e.target.files[0]);
+                  }
+                }}
+              />
+              <img src="/Clip.png" alt="paperclip" className="w-5" />
+            </label>
+            <Input
+              type="text"
+              placeholder="메시지를 입력하세요"
+              className="h-12 w-full border border-gray rounded-full pl-14 pr-4 focus:outline-none focus:ring-2 focus:ring-purple text-base"
+              value={inputValue}
+              onChange={handleInputChange}
+              onKeyDown={e => {
+                if (e.key === "Enter") handleSend();
+              }}
+              ref={inputRef}
+            />
+          </div>
+          <Button
+            type="button"
+            className="w-12 h-12 rounded-full bg-purple text-white text-base font-semibold flex items-center justify-center
+              hover:bg-purple active:bg-purple focus:bg-purple"
+            onClick={handleSend}
+          >
+            <img src="/Send.svg" alt="Send" className="h-6 -rotate-90" />
+          </Button>
+        </div>
       </div>
       {/* 햄버거 메뉴 사이드 패널 */}
       {/* 항상 렌더링, 상태에 따라 translate-x-full/0 적용 */}

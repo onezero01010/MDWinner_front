@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 const LogoPage = () => {
   const navigate = useNavigate();
-  const [isDoctor] = useState(true);
+  const [isDoctor] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
