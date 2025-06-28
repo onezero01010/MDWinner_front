@@ -11,6 +11,7 @@ import StartChat from './component/patient/Chat';
 import PatientList from './component/doctor/PatientList';
 import Reservation from './component/doctor/Reservation';
 import React, { useState } from "react";
+import PatientDetail from './component/doctor/PatientDetail';
 
 function App() {
   const [appointment, setAppointment] = useState({
@@ -29,6 +30,7 @@ function App() {
         <Route path="/patient/start-chat" element={<StartChat />} />
         <Route path="/doctor/patient-list" element={<PatientList appointment={appointment} />} />
         <Route path="/doctor/reservation" element={<Reservation appointment={appointment} setAppointment={setAppointment} />} />
+        <Route path="/doctor/patient-detail" element={<PatientDetail />} />
       </Routes>
     </BrowserRouter>
   );
