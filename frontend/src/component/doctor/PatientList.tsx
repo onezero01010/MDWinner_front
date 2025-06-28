@@ -11,6 +11,7 @@ export default function PatientListPage({ appointment }: { appointment: { date: 
   // 카드 목록을 state로 관리
   const [cards, setCards] = useState([1, 2, 3, 4, 5, 6]);
   const [removing, setRemoving] = useState<number[]>([]);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const navigate = useNavigate();
 
   const handleRemove = (idxToRemove: number) => {
@@ -49,6 +50,7 @@ export default function PatientListPage({ appointment }: { appointment: { date: 
             className={`mb-3 relative ml-1 mt-1 transition-all duration-300 ${
               removing.includes(idx) ? 'opacity-0 -mb-10' : ''
             }`}
+            onClick={() => setSelectedIndex(selectedIndex === idx ? null : idx)}
           >
             {/* 첫 번째 카드에만 빨간 점 표시 */}
             {idx === 0 && (
@@ -69,18 +71,27 @@ export default function PatientListPage({ appointment }: { appointment: { date: 
                   <p className="text-red-600 font-semibold">Red Flag Sign</p>
                 </div>
               </div>
-              <div className="mt-2 flex gap-2">
-                <Button size="sm" variant="outline" className="text-xs">세부 정보</Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="text-xs"
-                  onClick={() => handleRemove(idx)}
-                >
-                  읽음 처리
-                </Button>
-                <Button size="sm" className="text-xs" onClick={() => navigate('/doctor/reservation')}>예약 변경</Button>
-              </div>
+              {/* 선택된 카드만 버튼 보이기 */}
+              {selectedIndex === idx && (
+                <div className="mt-2 flex gap-2 w-full justify-end">
+                  <Button size="sm" variant="outline" className="text-xs">세부 정보</Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="text-xs"
+                    onClick={(e) => { e.stopPropagation(); handleRemove(idx); }}
+                  >
+                    읽음 처리
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="text-xs"
+                    onClick={(e) => { e.stopPropagation(); navigate('/doctor/reservation'); }}
+                  >
+                    예약 변경
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
         ))}
