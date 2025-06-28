@@ -1,12 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Certification = () => {
+const Information = () => {
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate('/patient/confirmation');
+    navigate('/patient/certification');
   };
 
   return (
@@ -15,12 +15,21 @@ const Certification = () => {
       <img src="/PurpleLogo.svg" alt="Logo" className="w-24 h-28 mb-10" />
       <form className="w-full max-w-xs flex flex-col gap-6" onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="name" className="block mb-2 text-sm font-semibold text-gray-900">인증번호</label>
+          <label htmlFor="name" className="block mb-2 text-sm font-semibold text-gray-900">이름</label>
           <input
-            id="certification"
+            id="name"
             type="text"
             className="w-full px-4 py-3 border border-gray rounded-lg focus:outline-none focus:ring-2 focus:ring-purple"
-            placeholder="인증번호를 입력하세요"
+            placeholder="이름을 입력하세요"
+          />
+        </div>
+        <div>
+          <label htmlFor="phone" className="block mb-2 text-sm font-semibold text-gray-900">전화번호</label>
+          <input
+            id="phone"
+            type="tel"
+            className="w-full px-4 py-3 border border-gray rounded-lg focus:outline-none focus:ring-2 focus:ring-purple"
+            placeholder="전화번호를 입력하세요"
           />
         </div>
         <button
@@ -29,10 +38,9 @@ const Certification = () => {
         >
           확인
         </button>
-
       </form>
     </div>
   );
 };
 
-export default Certification;
+export default Information;
