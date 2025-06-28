@@ -26,14 +26,14 @@ const StartChat = () => {
     setInputValue(e.target.value);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && inputValue.trim() !== '') {
-      // 임시 답변 예시
-      const answer = '이것은 답변입니다.';
-      setMessages([...messages, { question: inputValue, answer }]);
-      setInputValue('');
-    }
-  };
+  // const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  //   if (e.key === 'Enter' && inputValue.trim() !== '') {
+  //     // 임시 답변 예시
+  //     const answer = '이것은 답변입니다.';
+  //     setMessages([...messages, { question: inputValue, answer }]);
+  //     setInputValue('');
+  //   }
+  // };
 
   const handleSend = () => {
     if (inputValue.trim() !== "" || file) {

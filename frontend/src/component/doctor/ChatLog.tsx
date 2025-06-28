@@ -11,19 +11,18 @@ interface StartChatProps {
 }
 
 const StartChat: React.FC<StartChatProps> = ({externalMessages}) => {
-  const [inputValue, setInputValue] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const chatRef = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && inputValue.trim() !== '') {
-      // 임시 답변 예시
-      const answer = '이것은 답변입니다.';
-      setMessages([...messages, { question: inputValue, answer }]);
-      setInputValue('');
-    }
-  };
+  // const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  //   if (e.key === 'Enter' && inputValue.trim() !== '') {
+  //     // 임시 답변 예시
+  //     const answer = '이것은 답변입니다.';
+  //     setMessages([...messages, { question: inputValue, answer }]);
+  //     setInputValue('');
+  //   }
+  // };
 
   // 새 메시지 추가 시 스크롤 하단으로 이동
   useEffect(() => {

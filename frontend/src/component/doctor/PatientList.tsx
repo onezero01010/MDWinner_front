@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Card, CardContent } from "../../components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "../../components/ui/tabs";
 import { Badge } from "../../components/ui/badge";
@@ -250,7 +250,7 @@ export default function PatientListPage({
 
       {/* List */}
       <ScrollArea className="flex-1 px-4 py-2">
-        {filtered.map((patient, idx) => (
+        {filtered.map((patient, _) => (
           <Card
             key={patient.id}
             className={`mb-3 relative ml-1 mt-1 transition-all duration-300`}
@@ -277,6 +277,7 @@ export default function PatientListPage({
                     <span className="text-darkgray">진료 예정</span>{" "}
                     {patient.reservation.date} {patient.reservation.time}
                   </p>
+                  <br />
                 </div>
                 <div className="text-right">
                   <p className="text-sm">{patient.cc}</p>

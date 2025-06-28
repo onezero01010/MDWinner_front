@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Button } from "../../components/ui/button"
 import { Calendar } from "../../components/ui/calendar"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select"
+// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select"
 import Picker from 'react-mobile-picker';
 import { useNavigate } from "react-router-dom"
 
-export default function AppointmentEditor({ appointment, setAppointment }: { appointment: { date: string, time: string }, setAppointment: (appointment: { date: string, time: string }) => void }) {
+export default function AppointmentEditor({ setAppointment }: { setAppointment: (appointment: { date: string, time: string }) => void }) {
   const [date, setDate] = useState<Date | undefined>(new Date("2024-06-26"))
   const [value, setValue] = useState({
     hour: '08',
@@ -89,7 +89,12 @@ export default function AppointmentEditor({ appointment, setAppointment }: { app
       </div>
 
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-sm bg-white px-6 pb-4 flex justify-between gap-4 z-10">
-        <Button className="w-full bg-black text-white hover:bg-gray-800" onClick={handleChange}>
+        <Button
+          onClick={() => {
+            handleChange();
+            navigate("/doctor/patient-list");
+          }}
+        >
           변경
         </Button>
         <Button variant="outline" className="w-full mb-2" onClick={() => navigate('/doctor/patient-list')}>취소</Button>

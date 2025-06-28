@@ -1,4 +1,3 @@
-import React from "react";
 import { Switch } from "../../components/ui/switch";
 import { Calendar, Star, User } from "lucide-react"
 import { useNavigate } from "react-router-dom"
