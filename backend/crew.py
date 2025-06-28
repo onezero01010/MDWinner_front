@@ -263,11 +263,11 @@ class Piethon2():
             목표는 이러한 치료 후 증상의 원인을 평가하고 다음 최적의 임상 조치를 알리는 것입니다.
             """,
             expected_output="""
-            A dictionary with the following fields:
-            - differential_diagnosis: list of possible diagnoses with likelihood and justification
-            - clinical_summary: overall interpretation of the current condition
-            - red_flags: list of any critical warning signs
-            - recommendations: next-step suggestions for clinicians
+            다음 필드를 포함하는 사전(dictionary):
+            - differential_diagnosis: 가능성과 근거를 포함한 감별 진단 목록
+            - clinical_summary: 현재 상태에 대한 전반적인 해석
+            - red_flags: 중요한 경고 신호 목록
+            - recommendations: 임상의를 위한 다음 단계 제안
             """,
             agent=self.agent_diagnosis(),
             context=[self.task_ask_and_query()]
@@ -285,12 +285,12 @@ class Piethon2():
                 "Base your classification on clinical reasoning and medical red flag thresholds. "
                 "Err on the side of caution, but avoid false alarms. Justify your decision with concise medical rationale."
             ),
-            expected_output=(
-                "A dictionary with the following fields:\n"
-                "- severity_level: one of ['green', 'yellow', 'red']\n"
-                "- reasoning: clinical explanation of why this level was assigned\n"
-                "- next_steps: patient or doctor-facing recommendations based on severity"
-            ),
+            expected_output="""
+            다음 필드를 포함하는 사전(dictionary):
+            - severity_level: ['green', 'yellow', 'red'] 중 하나
+            - reasoning: 이 심각도 수준이 할당된 이유에 대한 임상적 설명
+            - next_steps: 심각도에 따른 환자 또는 의사 대상 권장 사항
+            """,
             agent=self.agent_tell(),
             context = [self.task_diagnose()]
         )
@@ -317,10 +317,10 @@ class Piethon2():
             주의를 기울이되 허위 경보는 피합니다. 간결한 의학적 근거로 결정을 정당화합니다.
             """,
             expected_output="""
-            A dictionary with the following fields:
-            - severity_level: one of ['green', 'yellow', 'red']
-            - reasoning: clinical explanation of why this level was assigned
-            - next_steps: patient or doctor-facing recommendations based on severity
+            다음 필드를 포함하는 사전(dictionary):
+            - severity_level: ['green', 'yellow', 'red'] 중 하나
+            - reasoning: 이 심각도 수준이 할당된 이유에 대한 임상적 설명
+            - next_steps: 심각도에 따른 환자 또는 의사 대상 권장 사항
             """,
             agent=self.agent_alert(),
             context=[self.task_diagnose()],
@@ -345,30 +345,8 @@ class Piethon2():
             - 알림 에이전트 분석에서 도출된 긴급도 지표
             """,
 
-            expexted_output_en= """English: A concise, structured summary including:
-            1. Patient Summary:
-            - Age, Gender, Diagnosis history, Relevant procedures (e.g., previous knee surgery, injections)
-            
-            2. Chief Complaints:
-            - Primary symptom (e.g., knee pain, swelling, reduced mobility)
-            - Symptom duration, intensity, changes over time
-            
-            3. Diagnostic Insights:
-            - Key clinical findings and symptom patterns requiring attention (e.g., knee warmth, rapid onset swelling within 24 hours, difficulty walking)
-            - Important symptom clusters and temporal relationships identified by the Diagnosis Agent
-            - Clinical red flags or concerning symptom combinations that warrant immediate evaluation
-            
-            4. Recommended Clinical Actions:
-            - Immediate actions required (if any)
-            - Suggested follow-up schedule (e.g., clinic visit tomorrow)
-            - Recommended patient management and treatment guidance (e.g., pain management protocol, icing frequency)
-            
-            5. Alert Level:
-            - Clearly marked alert status (Red, Yellow, Green) and rationale for urgency level
-"""
             expected_output="""
-
-            Korean: 다음을 포함한 간결하고 구조화된 요약:
+            다음을 포함한 간결하고 구조화된 요약:
             1. 환자 요약:
             - 나이, 성별, 진단 이력, 관련 시술 (예: 이전 무릎 수술, 주사)
             
