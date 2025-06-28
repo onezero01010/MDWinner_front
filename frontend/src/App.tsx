@@ -8,6 +8,7 @@ import Login from './component/doctor/Login';
 import Certification from './component/patient/Certification';
 import Confirmation from './component/patient/Confirmation';
 import StartChat from './component/patient/Chat';
+import PatientDetail from './component/doctor/PatientDetail';
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
         <Route path="/patient/certification" element={<Certification />} /> 
         <Route path="/patient/confirmation" element={<Confirmation />} />
         <Route path="/patient/start-chat" element={<StartChat />} />
+        <Route path="/doctor/patient-detail" element={<PatientDetail />} />
       </Routes>
     </BrowserRouter>
   );
