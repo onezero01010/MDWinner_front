@@ -74,7 +74,17 @@ export default function PatientListPage({ appointment }: { appointment: { date: 
               {/* 선택된 카드만 버튼 보이기 */}
               {selectedIndex === idx && (
                 <div className="mt-2 flex gap-2 w-full justify-end">
-                  <Button size="sm" variant="outline" className="text-xs">세부 정보</Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="text-xs"
+                    onClick={e => {
+                      e.stopPropagation();
+                      navigate('/doctor/patient-detail');
+                    }}
+                  >
+                    세부 정보
+                  </Button>
                   <Button
                     size="sm"
                     variant="outline"
@@ -103,7 +113,10 @@ export default function PatientListPage({ appointment }: { appointment: { date: 
           <Star size={20} />
           <span className="text-xs">환자 목록</span>
         </div>
-        <div className="flex flex-col items-center text-gray-500 cursor-pointer" onClick={() => navigate('/doctor/reservation')}>
+        <div
+          className="flex items-center gap-1 cursor-pointer"
+          onClick={() => navigate('/doctor/calender')}
+        >
           <Calendar size={20} />
           <span className="text-xs">예약 관리</span>
         </div>

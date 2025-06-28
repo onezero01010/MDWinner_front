@@ -12,6 +12,7 @@ import PatientList from './component/doctor/PatientList';
 import Reservation from './component/doctor/Reservation';
 import React, { useState } from "react";
 import PatientDetail from './component/doctor/PatientDetail';
+import Calender from './component/doctor/Calender';
 import { Toaster } from 'sonner';
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
         <Route path="/doctor/patient-list" element={<PatientList appointment={appointment} />} />
         <Route path="/doctor/reservation" element={<Reservation appointment={appointment} setAppointment={setAppointment} />} />
         <Route path="/doctor/patient-detail" element={<PatientDetail />} />
+        <Route path="/doctor/calender" element={<Calender />} />
       </Routes>
     </BrowserRouter>
   );
