@@ -113,7 +113,10 @@ export default function PatientListPage({ appointment }: { appointment: { date: 
           <Star size={20} />
           <span className="text-xs">환자 목록</span>
         </div>
-        <div className="flex flex-col items-center text-gray-500 cursor-pointer" onClick={() => navigate('/doctor/reservation')}>
+        <div
+          className="flex items-center gap-1 cursor-pointer"
+          onClick={() => navigate('/doctor/calender')}
+        >
           <Calendar size={20} />
           <span className="text-xs">예약 관리</span>
         </div>
