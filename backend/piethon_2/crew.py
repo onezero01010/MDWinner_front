@@ -7,8 +7,8 @@ import os
 import json
 
 
-os.environ["CHROMA_OPENAI_API_KEY"] = "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"
-os.environ["OPENAI_API_KEY"] = "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"
+os.environ["CHROMA_OPENAI_API_KEY"] = ""
+os.environ["OPENAI_API_KEY"] = ""
 
 
 llm = LLM(
@@ -87,9 +87,50 @@ class HumanInputContextTool(BaseTool):
                 return json.dumps(question)
             except:
                 return str(question)
-            
+
+class HumanAnswerToolSchema(BaseModel):
+    answer: str
+
+
+class HumanAnswerTool(BaseTool):
+    name: str = "Answer question of human"
+    description: str = (
+        "Use this tool to answer questions to the human. "
+        "You can pass the question argument in any form (raw string or dictionary or list) "
+        "and I will sanitize it to answer the human."
+    )
+    args_schema = HumanAnswerToolSchema
+
+    def _run(self, answer) -> str:
+        # 방탄 처리
+        cleaned_answer = self._clean_question(answer)
+        return ask_human(cleaned_answer)
+
+    def _clean_question(self, answer) -> str:
+        """
+        어떤 형식이 들어와도 문자열로 변환
+        """
+        import json
+
+        if isinstance(answer, str):
+            return answer.strip()
+
+        elif isinstance(answer, dict):
+            # 가장 흔히 오는 {"description": "..."} 형태
+            return answer.get("description", str(answer))
+
+        elif isinstance(answer, list):
+            return " / ".join(str(q) for q in answer)
+
+        else:
+            try:
+                return json.dumps(answer)
+            except:
+                return str(answer)
+
 human_tool = HumanInputContextTool()
 
+answer_tool = HumanAnswerTool()
 
     
 """Piethon2 crew"""  
@@ -112,9 +153,10 @@ agent_ask = Agent(
             "환자의 과거 진료 정보는 다음과 같습니다. 현재 증상에 대한 데이터가 아님에 주의하십시오: {sc_data}. "
         ),
         backstory=(
-            "당신은 풍부한 임상경험을 가진 등록 간호사이며, "
+           "당신은 풍부한 임상경험을 가진 등록 간호사이며, "
             "정형외과 외래 환자의 사전 병력 정보를 빠르게 파악하고 대화를 맞춤화할 수 있는 능력을 보유하고 있습니다. "
             "환자의 배경과 진료 정보를 바탕으로, 신뢰감 있고 공감적인 태도로 필요한 정보를 빠짐없이 수집합니다."
+            "환자는 노인이며, 질문은 되도록이면 한 번에 하나씩만 합니다."
         ),
         tools=[human_tool],
         verbose=True,
@@ -135,9 +177,11 @@ agent_diagnosis = Agent(
         현재 상황의 임상적 맥락을 설명하며, 의학적으로 타당한 근거를 제시합니다. 
         최종 확진 진단을 제공하지 않고, 문제에 대한 명확한 설명과 추가 조치 방향을 제안합니다.
         
+        red_flags 항목에는 반드시 환자가 실제로 호소한 증상 중에서 red alert를 시사하는 경우만 포함하십시오. 
+        환자가 직접 말하지 않은 증상이나, 정보에 언급되지 않은 문제는 포함하지 마십시오.
+        
         환자의 배경 정보: {background_info}
         환자의 진료 정보: {sc_data}
-        
         """,
         backstory="""
         English: You are a seasoned clinician specializing in musculoskeletal conditions. The patient you're assessing has already received 
@@ -154,7 +198,8 @@ agent_diagnosis = Agent(
         환자의 기본 정보(나이, 성별), 첫 방문 시 주요 증상, 받은 치료, 그 의학적 목적, KL 등급, 
         그리고 이후 발생한 문제에 대한 상세한 대화 내용에 접근할 수 있습니다. 
         이 정보를 사용하여 현재 합병증이나 증상 악화의 성격을 설명하고, 가능한 임상적 원인을 제안하며, 
-        추가 중재가 필요할 수 있는 위험 신호를 강조하는 것이 당신의 업무입니다.
+        red alert 가능성이 있는 증상만을 기반으로 주의 신호를 판단합니다. 
+        환자가 언급하지 않은 증상은 절대로 red_flags에 포함하지 마십시오.
         """,
         verbose=True,
         llm = llm,
@@ -234,7 +279,6 @@ agent_explain= Agent(
         goal=(
             "반드시 context를 기반으로 환자에게 쉽게 설명하고,"
             "CrewInput으로 주어지는 질문 목록에 대해 차근차근 답변하세요. "
-            "설명과 답변이 끝난 뒤에는 '추가적인 질문이 있으신가요?'라고 물어보며 대화를 이어갈 준비를 하세요."
         ),
         backstory=(
             "당신은 수년간 정형외과 외래 간호사로서 진단 설명과 환자 응대 경험이 풍부합니다. "
@@ -249,6 +293,7 @@ agent_qna= Agent(
         role=(
             "당신은 환자가 추가로 묻는 질문이나 요구사항을 계속해서 응답하는 전문 간호사입니다. "
             "의료진의 진단을 참고하며, 이전 대화 내용도 함께 고려해 답변하세요."
+            "다른 말은 하지말고, 궁금한 점이 없는지만 물어봐야한다."
         ),
         goal=(
             "환자가 명시적으로 대화를 종료하기 전까지, "
@@ -268,7 +313,7 @@ task_ask_and_query= Task(
         description=(
             "환자와의 다중턴 대화를 통해 증상에 대한 구체적이고 체계적인 정보를 수집하세요. "
             "다음 항목을 반드시 포함해야 합니다: 증상(Symptom), 증상 발생 시점(Onset), 발생 부위(Location), "
-            "지속 시간(Duration), 증상의 경과(Course), 증상의 특성(Character), 동반 증상(Associated symptom), "
+            "지속 시간(Duration), 증상의 경과(Course), 증상의 특성(Character), 환자가 호소하는 증상과 관련있는 동반 증상(Associated symptom), "
             "완화·악화 요인(Factor). "
             "환자와의 대화를 통해 이 모든 요소가 채워질 수 있는지를 항상 확인합니다. "
             "만약 환자의 설명에 누락되거나 불분명한 부분이 있다면, 자연스럽고 공감적인 간호사 어투로 추가 질문을 통해 보완하십시오. "
@@ -303,12 +348,15 @@ task_diagnose= Task(
         진단을 확정하지 말고, 가능한 설명과 다음 단계 권장사항을 제시합니다. 
         환자는 이미 초기 치료를 받았으며 현재 새로운 또는 악화된 문제를 보고하고 있습니다. 
         목표는 이러한 치료 후 증상의 원인을 평가하고 다음 최적의 임상 조치를 알리는 것입니다.
+        
+        red_flags 필드에는 반드시 환자가 실제로 언급한 증상 중에서만 red alert 징후를 포함하십시오. 
+        환자가 호소하지 않은 문제는 포함하지 마십시오.
         """,
         expected_output="""
         다음 필드를 포함하는 사전(dictionary):
         - differential_diagnosis: 가능성과 근거를 포함한 감별 진단 목록
         - clinical_summary: 현재 상태에 대한 전반적인 해석
-        - red_flags: 중요한 경고 신호 목록
+        - red_flags: 환자가 호소한 증상 중 의학적으로 red alert에 해당하는 항목만 나열
         - recommendations: 임상의를 위한 다음 단계 제안
         """,
         agent=agent_diagnosis,
@@ -391,13 +439,11 @@ task_summarize_for_doctor=Task(
 task_explain= Task(
         name="진단 설명 및 초기 질문 답변",
         description=(
-            "knowledge_source(medical_diagnosis)를 기반으로 환자가 이해할 수 있도록 진단을 설명하고, "
-            "CrewInput으로 제공되는 질문 목록에 대해 답변하세요. "
-            "마지막에는 '추가적인 질문이 있으신가요?'라는 문구로 후속 질문을 유도합니다. "
-            "추가 질문이 들어올 때를 대비해 따뜻하고 공감적인 간호사 어투를 유지하세요."
+            "환자의 증상을 간단하게 요약하고 medical diagnosis를 기반으로 환자가 이해할 수 있도록 진단을 설명하세요."
+            "환자분께 친절하게 설명하는 간호사 어투를 사용하세요."
         ),
         expected_output=(
-            "진단 설명 + query 답변 + 마지막에 '추가적인 질문이 있으신가요?' 로 끝나는 한 차례 메시지."
+            "환자의 증상을 간단하게 요약하고 가능한 진단들을 쉽게 풀어 환자 눈높이에 맞게 설명"
         ),
         output_json=None,
         agent=agent_explain,
@@ -408,7 +454,7 @@ task_explain= Task(
 task_qna= Task(
         name="추가 질문 응답",
         description=(
-            "환자가 추가로 묻거나 요청하는 내용을 knowledge_source(medical diagnosis)와 "
+            "환자가 추가로 묻거나 요청하는 내용을 context(medical diagnosis)와 "
             "이전 대화 내용을 기반으로 계속해서 대답하세요. "
             "환자가 '대화를 종료합니다' 등 종료의사를 명시하기 전까지 계속 질의응답을 이어갑니다. "
             "공감적이고 따뜻한 간호사 어투를 사용하며, 필요 시 질문을 다시 확인해도 됩니다."
@@ -418,9 +464,9 @@ task_qna= Task(
         ),
         output_json=None,
         agent=agent_qna,
-        human_input=True,
-        context = [task_diagnose]
-    )
+        human_input=False,
+        tools=[answer_tool],
+        context = [task_diagnose])
 
 crew= Crew(
         agents=[
