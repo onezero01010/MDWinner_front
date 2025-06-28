@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './hideScrollbar.css'; // 스크롤바 숨김용 CSS import (없으면 생성)
+import { Carousel, CarouselContent, CarouselItem } from "../../components/ui/carousel";
+import { CalendarIcon } from 'lucide-react';
 
 type ChatMessage = {
   question: string;
@@ -37,7 +39,7 @@ const StartChat = () => {
   }, [messages]);
   
   return (
-    <div className="min-h-screen flex flex-col bg-white pt-8 pb-4">
+    <div className="w-full min-h-screen flex flex-col bg-white pt-8 pb-4">
       {/* 상단 로고 + 진행률 바 (고정) */}
       <div className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white z-20 pt-8">
         <div className="flex flex-row items-center justify-between w-full px-6">
@@ -66,10 +68,57 @@ const StartChat = () => {
         style={{ paddingTop: '120px', paddingBottom: messages.length === 0 ? '120px' : '80px' }}
       >
         {messages.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-lg px-6 py-5 max-w-md w-[90%] text-gray-800 text-base font-medium mb-8 border border-gray text-center mx-auto mt-40">
-            안녕하세요, 송원영님!<br /><br />
-            혹시 문제가 있다면 저에게 말씀해주시면 적절한 대응 방법을 알려드릴 수 있어요!
-          </div>
+          <>
+            <div className="bg-white rounded-xl shadow-lg px-6 py-5 max-w-md w-[90%] text-gray-800 text-base font-medium mb-8 border border-gray text-center mx-auto -mt-10">
+              안녕하세요, 송원영님!<br /><br />
+              혹시 문제가 있다면 저에게 말씀해주시면 적절한 대응 방법을 알려드릴 수 있어요!
+            </div>
+            <div className="w-full flex justify-center items-center py-4 mt-8">
+              <div className="max-w-full w-full">
+              <Carousel>
+                <CarouselContent className="gap-4">
+                  <CarouselItem className="flex justify-center">
+                    <div className="w-80 h-80 bg-lightPurple border border-gray-200 rounded-2xl shadow-xl p-5 flex flex-col justify-between text-center transition hover:shadow-2xl">
+                      {/* 날짜와 아이콘 */}
+                      <div className="flex items-center justify-center gap-2 text-purple font-semibold text-lg">
+                        <CalendarIcon className="w-5 h-5" />
+                        <span>6월 25일</span>
+                      </div>
+
+                      {/* 질병명 */}
+                      <div className="text-xl font-bold text-gray-800 mt-4">
+                        퇴행성 관절염
+                      </div>
+
+                      {/* 치료 정보 */}
+                      <div className="text-base text-gray-600">
+                        양측 주사 치료
+                      </div>
+                    </div>
+                  </CarouselItem>
+
+                  <CarouselItem className="flex justify-center">
+                    <div className="w-80 h-80 bg-lightPurple border border-gray-200 rounded-2xl shadow-xl p-5 flex flex-col justify-between text-center transition hover:shadow-2xl">
+                      <div className="flex items-center justify-center gap-2 text-purple font-semibold text-lg">
+                        <CalendarIcon className="w-5 h-5" />
+                        <span>6월 20일</span>
+                      </div>
+
+                      <div className="text-xl font-bold text-gray-800 mt-4">
+                        슬관절염
+                      </div>
+
+                      <div className="text-base text-gray-600">
+                        비스테로이드성 소염진통제 처방
+                      </div>
+
+                    </div>
+                  </CarouselItem>
+                </CarouselContent>
+              </Carousel>
+              </div>
+            </div>
+          </>
         ) : (
           <div className="flex flex-col gap-2 w-full max-w-md px-4">
             {messages.map((msg, idx) => (
@@ -105,12 +154,12 @@ const StartChat = () => {
             </div>
         )}
         {messages.length === 0 && (
-          <div className="overflow-x-auto whitespace-nowrap hide-scrollbar">
-            <button className="inline-block bg-white border border-gray rounded-full px-4 py-2 text-sm shadow-sm mx-2">체온 올리는 법, 열도 동반인가요?</button>
-            <button className="inline-block bg-white border border-gray rounded-full px-4 py-2 text-sm shadow-sm mx-2">이런 복약방법은 어떤 것이 있나요?</button>
-            <button className="inline-block bg-white border border-gray rounded-full px-4 py-2 text-sm shadow-sm mx-2">더운 20일<br/>식단과 영양제<br/>양수 축소 치료</button>
-            <button className="inline-block bg-white border border-gray rounded-full px-4 py-2 text-sm shadow-sm mx-2">관련 25일<br/>출혈량<br/>브라운색/분홍색 소량/점막과 섞인</button>
-          </div>
+          <>
+            <div className="overflow-x-auto whitespace-nowrap hide-scrollbar">
+              <button className="inline-block bg-white border border-gray rounded-full px-4 py-2 text-sm shadow-sm mx-2">체온 올리는 법, 열도 동반인가요?</button>
+              <button className="inline-block bg-white border border-gray rounded-full px-4 py-2 text-sm shadow-sm mx-2">이런 복약방법은 어떤 것이 있나요?</button>
+            </div>
+          </>
         )}
         <input
           type="text"

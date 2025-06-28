@@ -74,7 +74,17 @@ export default function PatientListPage({ appointment }: { appointment: { date: 
               {/* 선택된 카드만 버튼 보이기 */}
               {selectedIndex === idx && (
                 <div className="mt-2 flex gap-2 w-full justify-end">
-                  <Button size="sm" variant="outline" className="text-xs">세부 정보</Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="text-xs"
+                    onClick={e => {
+                      e.stopPropagation();
+                      navigate('/doctor/patient-detail');
+                    }}
+                  >
+                    세부 정보
+                  </Button>
                   <Button
                     size="sm"
                     variant="outline"
