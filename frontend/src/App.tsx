@@ -19,11 +19,13 @@ import { dummyPatients } from './component/Patient';
 
 
 function App() {
-  const [_, setAppointment] = useState({
-    date: "2024-06-30",
-    time: "11:30",
-  });
-  const [patients] = useState(dummyPatients);
+  const [patients, setPatients] = useState(dummyPatients);
+
+  const handleUpdateReservation = (id: number, reservation: { date: string, time: string }) => {
+    setPatients(prev =>
+      prev.map(p => p.id === id ? { ...p, reservation } : p)
+    );
+  };
 
   return (
     <BrowserRouter>
@@ -36,7 +38,7 @@ function App() {
         <Route path="/patient/confirmation" element={<Confirmation />} />
         <Route path="/patient/start-chat" element={<StartChat />} />
         <Route path="/doctor/patient-list" element={<PatientList patients={patients} />} />
-        <Route path="/doctor/reservation" element={<Reservation setAppointment={setAppointment} />} />
+        <Route path="/doctor/reservation/:id" element={<Reservation onUpdateReservation={handleUpdateReservation} />} />
         <Route path="/doctor/patient-detail/:id" element={<PatientDetail />} />
         <Route path="/doctor/calender" element={<Calender />} />
         <Route path="/doctor/setting" element={<Setting />} />

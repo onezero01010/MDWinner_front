@@ -7,6 +7,7 @@ import { ScrollArea } from "../../components/ui/scroll-area";
 import { Star, Calendar, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { Patient } from "../Patient";
+import { dummyPatients } from "../Patient";
 
 export default function PatientListPage({
   patients = dummyPatients,
@@ -43,7 +44,7 @@ export default function PatientListPage({
     <div className="w-full h-screen bg-gray-100 flex flex-col">
       {/* Header */}
       <div className="p-4 bg-white shadow flex items-center gap-2">
-        <img src="/LogoName.svg" className="mt-2 h-10" alt="logo" />
+        <img src="/CAREBOT.svg" className="mt-2 h-10" alt="logo" />
       </div>
 
       {/* Tabs */}
@@ -142,7 +143,7 @@ export default function PatientListPage({
                   className="flex-1 rounded-none"
                   onClick={(e) => {
                     e.stopPropagation();
-                    navigate("/doctor/reservation");
+                    navigate(`/doctor/reservation/${patient.id}`);
                   }}
                 >
                   예약 변경

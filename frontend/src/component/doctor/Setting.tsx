@@ -9,12 +9,7 @@ export default function Setting() {
     <div className="flex flex-col items-center min-h-screen bg-white pt-8">
       {/* 상단 로고 */}
       <div className="mb-10">
-        <div className="w-24 h-24 bg-[#7B3AED] rounded-[32px] flex items-center justify-center relative">
-          <svg width="48" height="48" viewBox="0 0 48 48" className="absolute top-6 left-6">
-            <path d="M16 20c0-2.21 1.79-4 4-4s4 1.79 4 4" fill="white"/>
-            <path d="M28 20c0-2.21 1.79-4 4-4s4 1.79 4 4" fill="white"/>
-          </svg>
-        </div>
+          <img src="/PurpleLogo.svg" alt="logo" className="w-20 h-20" />
       </div>
 
       {/* 알림 설정 */}
