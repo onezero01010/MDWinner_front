@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import RedAlert from "./RedAlert";
 import ActionModal from "./ActionModal";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../components/ui/tooltip";
+import { useNavigate } from "react-router-dom";
 
 const patient = {
   name: "송원영",
@@ -20,6 +21,7 @@ export default function PatientDetail() {
     const [actionOpen, setActionOpen] = useState(false);
     const [tooltipOpen, setTooltipOpen] = useState(false);
     const tooltipTimeout = useRef<NodeJS.Timeout | null>(null);
+    const navigate = useNavigate();
 
     const handleAction = () => {
         setActionOpen(true);
@@ -45,7 +47,11 @@ export default function PatientDetail() {
       <div className="border-b pb-2">
         {/* Top: Back + Patient Info */}
         <div className="flex items-center space-x-3 px-4 pt-4">
-          <Button variant="ghost" size="icon">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate('/doctor/patient-list')}
+          >
             <ArrowLeft />
           </Button>
           <div>
