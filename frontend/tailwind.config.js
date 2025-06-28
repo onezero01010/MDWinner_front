@@ -12,6 +12,7 @@ export default {
   			purple: '#8E34FB',
   			gray: '#DBDADA',
   			lightPurple: '#F5ECFF',
+        darkgray: '#9D9D9D',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
