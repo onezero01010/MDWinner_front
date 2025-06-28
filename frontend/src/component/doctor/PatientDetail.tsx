@@ -2,9 +2,10 @@ import React, { useState, useRef } from "react";
 import { Button } from "../../components/ui/button";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "../../components/ui/accordion";
 import { ArrowLeft } from "lucide-react";
-import RedAlert from "./RedAlert";
+import { showAlert } from "./RedAlert";
 import ActionModal from "./ActionModal";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../components/ui/tooltip";
+import { toast } from "sonner";
 
 const patient = {
   name: "송원영",
@@ -31,6 +32,16 @@ export default function PatientDetail() {
         tooltipTimeout.current = setTimeout(() => setTooltipOpen(false), 2000); // 2초 후 자동 닫힘
     };
 
+    const handleRedAlert = () => {
+        showAlert({
+            title: "의식 저하",
+            description: "6시간 전 발생, 서서히 진행",
+            patientName: patient.name,
+            age: patient.age,
+            gender: "F"
+        });
+    };
+
     // 권장 조치 예시
     const actions = [
         "수액 투여",
@@ -45,7 +56,7 @@ export default function PatientDetail() {
       <div className="border-b pb-2">
         {/* Top: Back + Patient Info */}
         <div className="flex items-center space-x-3 px-4 pt-4">
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" onClick={handleRedAlert}>
             <ArrowLeft />
           </Button>
           <div>
@@ -72,7 +83,7 @@ export default function PatientDetail() {
         </div>
         {/* Tabs -> Full Buttons */}
         <div className="flex mt-4 gap-2 px-4">
-          <Button className="flex-1" variant="default" onClick={handleAction}>권장 조치</Button>
+          <Button className="flex-1" variant="default" onClick={handleAction}>환자 정보</Button>
           <Button className="flex-1" variant="secondary">예약 변경</Button>
           <Button className="flex-1" variant="secondary">대화 기록</Button>
         </div>
@@ -83,13 +94,6 @@ export default function PatientDetail() {
           <AccordionItem value="symptom">
             <AccordionTrigger>증상</AccordionTrigger>
             <AccordionContent>
-              <RedAlert
-                title="의식 저하"
-                description="6시간 전 발생, 서서히 진행"
-                patientName={patient.name}
-                age={patient.age}
-                gender="F"
-              />
               <ul className="list-disc pl-5 text-sm space-y-1">
                 <li>증상 발생 시점</li>
                 <li>증상 위치</li>
@@ -116,6 +120,12 @@ export default function PatientDetail() {
             <AccordionTrigger>AI 분석</AccordionTrigger>
             <AccordionContent>
               {/* AI 분석 내용 */}
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="diagnosis">
+            <AccordionTrigger>권장 조치</AccordionTrigger>
+            <AccordionContent>
+              {/* 권장 조치 */}
             </AccordionContent>
           </AccordionItem>
         </Accordion>

@@ -12,6 +12,7 @@ import PatientList from './component/doctor/PatientList';
 import Reservation from './component/doctor/Reservation';
 import React, { useState } from "react";
 import PatientDetail from './component/doctor/PatientDetail';
+import { Toaster } from 'sonner';
 
 function App() {
   const [appointment, setAppointment] = useState({
@@ -21,6 +22,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <Toaster position="top-center" richColors />
       <Routes>
         <Route path="/" element={<LogoPage />} />
         <Route path="/patient/info" element={<Information />} />
