@@ -7,9 +7,6 @@ import os
 import json
 
 
-os.environ["CHROMA_OPENAI_API_KEY"] = "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"
-os.environ["OPENAI_API_KEY"] = "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"
-
 llm = LLM(
     model="openai/gpt-4o-mini", # call model by provider/model_name
     # model="gemini/gemini-1.5-flash",
@@ -613,7 +610,7 @@ if __name__ == "__main__":
     dir=os.path.join(DATA_DIR,"doctorsummary.txt")
     with open(dir, "w", encoding="utf-8") as f:
         f.write(task_summarize_for_doctor.output.raw)    
-    dir=os.path.join(DATA_DIR,"alert.json")
+    dir=os.path.join(DATA_DIR,"alert.txt")
     with open(dir, "w", encoding="utf-8") as f:
-        json.dump(task_send_alert.output.json_dict,f)  
+        f.write(task_send_alert.output.raw,f)  
 
