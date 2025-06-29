@@ -16,6 +16,8 @@ import Calender from './component/doctor/Calender';
 import { Toaster } from 'sonner';
 import Setting from './component/doctor/Setting';
 import { dummyPatients } from './types/Patient';
+import { showAlert } from './component/doctor/RedAlert';
+import { useEffect } from 'react';
 
 
 function App() {
@@ -26,6 +28,31 @@ function App() {
       prev.map(p => p.id === id ? { ...p, reservation } : p)
     );
   };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // 입력 중이 아니고, 'r' 키(소문자)일 때만 실행
+      const active = document.activeElement;
+      const isInput =
+        active &&
+        (active.tagName === "INPUT" ||
+          active.tagName === "TEXTAREA" ||
+          (active as HTMLElement).isContentEditable);
+
+      if (!isInput && e.key === "r") {
+        showAlert({
+          title: "의식 저하",
+          description: "6시간 전 발생, 서서히 진행",
+          patientName: "송원영",
+          age: 22,
+          gender: "F",
+        });
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   return (
     <BrowserRouter>
