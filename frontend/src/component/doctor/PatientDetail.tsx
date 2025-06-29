@@ -108,19 +108,52 @@ export default function PatientDetail({ onUpdateReservation }: { onUpdateReserva
               </div>
             </div>
             {/* TabsList + Divider */}
-            <TabsList className="flex mt-4 gap-2 px-4">
-              <TabsTrigger value="info" className="flex-1">환자 정보</TabsTrigger>
-              <TabsTrigger value="reservation" className="flex-1">예약 변경</TabsTrigger>
-              <TabsTrigger value="chat" className="flex-1">대화 기록</TabsTrigger>
+            <TabsList className="flex mt-4 gap-2 px-4 bg-transparent shadow-none border-none my-2 mt-4">
+              <TabsTrigger
+                value="info"
+                className={`flex-1 text-base h-9 rounded-lg bg-transparent shadow-none border-none transition-all
+                  ${tab === "info"
+                    ? "font-bold !bg-[#592DA1] !text-white"
+                    : "font-normal hover:bg-violet-100"
+                  }`}
+              >
+                환자 정보
+              </TabsTrigger>
+              <TabsTrigger
+                value="reservation"
+                className={`flex-1 text-base h-9 rounded-lg bg-transparent shadow-none border-none transition-all
+                  ${tab === "reservation"
+                    ? "font-bold !bg-[#592DA1] !text-white"
+                    : "font-normal hover:bg-violet-100"
+                  }`}
+              >
+                예약 변경
+              </TabsTrigger>
+              <TabsTrigger
+                value="chat"
+                className={`flex-1 text-base h-9 rounded-lg bg-transparent shadow-none border-none transition-all
+                  ${tab === "chat"
+                    ? "font-bold !bg-[#592DA1] !text-white"
+                    : "font-normal hover:bg-violet-100"
+                  }`}
+              >
+                대화 기록
+              </TabsTrigger>
             </TabsList>
             <div className="border-b mt-2" />
           </div>
           {/* Tabs Content */}
           <TabsContent value="info">
             <div className="p-4">
-              <Accordion type="multiple" className="w-full space-y-2">
+              <Accordion
+                type="multiple"
+                className="w-full space-y-2"
+                defaultValue={["symptom"]}
+              >
                 <AccordionItem value="symptom">
-                  <AccordionTrigger>증상</AccordionTrigger>
+                  <AccordionTrigger className="text-base font-bold border-b-0 hover:no-underline focus:no-underline">
+                    증상
+                  </AccordionTrigger>
                   <AccordionContent>
                     <ul className="list-disc pl-5 text-sm space-y-1">
                       <li>증상 발생 시점</li>
@@ -133,19 +166,25 @@ export default function PatientDetail({ onUpdateReservation }: { onUpdateReserva
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="history">
-                  <AccordionTrigger>현병력</AccordionTrigger>
+                  <AccordionTrigger className="text-base font-bold border-b-0 hover:no-underline focus:no-underline">
+                    현병력
+                  </AccordionTrigger>
                   <AccordionContent>
                     {/* 현병력 내용 */}
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="warning">
-                  <AccordionTrigger>주의가 필요한 소견</AccordionTrigger>
+                  <AccordionTrigger className="text-base font-bold border-b-0 hover:no-underline focus:no-underline">
+                    주의가 필요한 소견
+                  </AccordionTrigger>
                   <AccordionContent>
                     {/* 주의가 필요한 소견 내용 */}
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="recommendation">
-                  <AccordionTrigger>권장 조치</AccordionTrigger>
+                  <AccordionTrigger className="text-base font-bold border-b-0 hover:no-underline focus:no-underline">
+                    권장 조치
+                  </AccordionTrigger>
                   <AccordionContent>
                     {/* 권장 조치 내용 */}
                   </AccordionContent>

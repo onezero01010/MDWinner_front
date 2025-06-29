@@ -70,7 +70,7 @@ export default function Calender() {
             <span className="text-xs">환자 목록</span>
           </div>
           <div
-            className="flex flex-col items-center text-blue-500"
+            className="flex flex-col items-center text-[#8E34FB]"
             onClick={() => navigate('/doctor/calender')}
           >
             <Calendar size={20} />

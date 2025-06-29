@@ -70,7 +70,7 @@ export default function Setting() {
             <span className="text-xs">예약 관리</span>
           </div>
           <div
-            className="flex flex-col items-center text-blue-500"
+            className="flex flex-col items-center text-[#8E34FB]"
             onClick={() => navigate('/doctor/setting')}
          >
             <User size={20} />
