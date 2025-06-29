@@ -45,6 +45,8 @@ class SymptomInformationOutput(BaseModel):
     character: str = Field(default="UNKNOWN", description="증상의 자세한 특성 (통증의 양상 등)")
     associated_symptom: str = Field(default="UNKNOWN", description="동반 증상 (발열, 오한, 피로 등)")
     factor: str = Field(default="UNKNOWN", description="완화인자/악화인자")
+    extra: str = Field(default="UNKNOWN", description="환자의 상태를 파악하기 위해 필요한 추가 정보들") #고침
+    
 
 def ask_human(question) -> str:
     return input(f"\n[AI] {question}\n> ")
@@ -207,14 +209,20 @@ human_tool = HumanInputContextTool()
 answer_tool = HumanAnswerTool()
 
     
-"""Piethon2 crew"""  
+"""Piethon2 crew"""  #고침
 agent_ask = Agent(
         role=(
-            "당신은 임상 병력 청취와 환자 커뮤니케이션에 특화된 숙련된 간호사입니다. "
+             "당신은 임상 병력 청취와 환자 커뮤니케이션에 특화된 숙련된 간호사입니다. "
             "당신의 역할은 다중턴 대화를 통해 환자에게 증상과 관련된 핵심 정보를 구조적이고 전문적으로 수집하는 것입니다. "
             "이 배경 정보를 반드시 참고하여, 불필요한 질문을 줄이고 필요한 항목만 보완적으로 탐색하세요. "
             "수집할 항목은 다음과 같습니다: 증상(Symptom), 발현 시점(Onset), 발생 부위(Location), "
-            "지속 시간(Duration), 경과(Course), 특성(Character), 동반 증상(Associated symptom), 완화·악화 요인(Factor)."
+            "지속 시간(Duration), 경과(Course), 특성(Character), 동반 증상(Associated symptom), 완화·악화 요인(Factor), 기타정보(extra)."
+            "채워야하는 항목들에 너무 얽매이지 말고, 자연스럽게 임상의처럼 환자와 대화를 하여 정보를 수집합니다."
+            "중복되는 질문이 있다면 피하고, 환자가 이미 제공한 정보를 바탕으로 필요한 추가 설명만 요청하세요."
+            "제공된 카테고리 중 굳이 채워야할 필요가 없다면 억지로 채우지 않아도 됩니다."
+            "환자에 대한 impression을 잡기 위해 필요한 정보들을 위주로 수집하세요."
+            "질문에 대한 예시를 제공할 때는, 예시를 최대한 풍부하게 제시하여 환자가 본인의 증상을 설명하기 쉽도록 해주세요"
+            "환자가 노인임을 유의하고, 질문은 되도록이면 한 번에 하나씩만 합니다."
         ),
         goal=(
             "당신의 목표는 위의 항목을 모두 포함하는 구조화된 증상 보고서를 작성하는 것입니다. "
@@ -385,18 +393,26 @@ agent_qna= Agent(
         llm=llm,
         #knowledge_sources=[tell_knowledge]
     )
-
+#고침
 task_ask_and_query= Task(
         name="증상 정보 수집",
         description=(
             "환자와의 다중턴 대화를 통해 증상에 대한 구체적이고 체계적인 정보를 수집하세요. "
             "다음 항목을 반드시 포함해야 합니다: 증상(Symptom), 증상 발생 시점(Onset), 발생 부위(Location), "
             "지속 시간(Duration), 증상의 경과(Course), 증상의 특성(Character), 환자가 호소하는 증상과 관련있는 동반 증상(Associated symptom), "
-            "완화·악화 요인(Factor). "
+            "완화·악화 요인(Factor), 기타정보(extra). "
+            "기타정보는 환자의 상태를 파악하기 위해 필요한 추가 정보들로, 환자에게 증상과 관련하여 더 말씀해줄 건 없는 지 물어보는 방식으로 물어보면 됩니다"
+            "기타정보를 얻을 때, 만약 더 물어보고 싶은 정보가 있다면 콕 찝어서 물어봐도 됩니다"
             "환자와의 대화를 통해 이 모든 요소가 채워질 수 있는지를 항상 확인합니다. "
             "만약 환자의 설명에 누락되거나 불분명한 부분이 있다면, 자연스럽고 공감적인 간호사 어투로 추가 질문을 통해 보완하십시오. "
             "환자가 이미 언급한 항목에 대해서는 같은 내용을 반복해 묻지 말고, 누락되거나 추가 설명이 필요한 부분만 자연스럽게 질문하세요. "
             "모든 정보는 의료진이 즉시 활용할 수 있을 정도로 구체적이고 명확해야 합니다."
+            "채워야하는 항목들에 너무 얽매이지 말고, 자연스럽게 임상의처럼 환자와 대화를 하여 정보를 수집합니다."
+            "중복되는 질문이 있다면 피하고, 환자가 이미 제공한 정보를 바탕으로 필요한 추가 설명만 요청하세요."
+            "제공된 카테고리 중 굳이 채워야할 필요가 없다면 억지로 채우지 않아도 됩니다."
+            "환자에 대한 impression을 잡기 위해 필요한 정보들을 위주로 수집하세요."
+            "질문에 대한 예시를 제공할 때는, 예시를 최대한 풍부하게 제시하여 환자가 본인의 증상을 설명하기 쉽도록 해주세요"
+            "환자가 노인임을 감안하고, 질문은 되도록이면 한 번에 하나씩 합니다."
         ),
         expected_output=(
             "다음 키를 포함한 유효한 JSON 객체를 출력합니다: symptom, onset, location, duration, course, character, "
