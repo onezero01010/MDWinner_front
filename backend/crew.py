@@ -8,7 +8,7 @@ import os
 llm = LLM(
     model="openai/gpt-4o-mini", # call model by provider/model_name
     # model="gemini/gemini-1.5-flash",
-    temperature = 0.7
+    temperature = 0.3
 )
 
 # tell_knowledge = CrewDoclingSource(
@@ -38,6 +38,7 @@ llm = LLM(
 class CrewInput(BaseModel):
     initial_message: str = Field(..., description="Initial message from the person")
     background_info: str = Field(..., description="환자 기본 정보 및 진료 데이터")
+    schedule_info: str = Field(..., description="예약 가능 날짜 및 예약 상태 데이터")
     
 class SymptomInformationOutput(BaseModel):
     symptom: str = Field(default="UNKNOWN", description="증상 명칭")
@@ -393,6 +394,10 @@ class Piethon2():
             description=(
                 "knowledge_source(medical_diagnosis)를 기반으로 환자가 이해할 수 있도록 진단을 설명하고, "
                 "CrewInput으로 제공되는 질문 목록에 대해 답변하세요. "
+                "알림 상태를 기반으로 환자의 다음 행동을 하세요."
+                "1. Red : 의료진이 환자에게 직접 연락을 취할 예정이니 안내해주세요"
+                "2. Yellow : 의료기관 방문이 필요한 상황이므로 {schedule_info}를 고려하여 환자와 예약을 잡아주세요. 예약 가능한 날짜가 없을 경우 의료진이 따로 연락을 취할 예정이라 안내해주세요."
+                "3. Green : 추가 행동 없음"
                 "마지막에는 '추가적인 질문이 있으신가요?'라는 문구로 후속 질문을 유도합니다. "
                 "추가 질문이 들어올 때를 대비해 따뜻하고 공감적인 간호사 어투를 유지하세요."
             ),
@@ -402,7 +407,7 @@ class Piethon2():
             output_json=None,
             agent=self.agent_explain(),
             human_input=False,
-            context = [self.task_diagnose()]
+            context = [self.task_diagnose(), self.task_send_alert()]
         )
     
     def task_qna(self) -> Task:
@@ -451,7 +456,7 @@ if __name__ == "__main__":
     TEXT = ("62세 여성, 3개월 전 양측 무릎 관절염(KL 2~3단계) 진단, 좌측 더 심함, HKA: 우측 varus 4도, 좌측 7도"
             "6개월 지속형 연골주사 치료 중 (좌우 모두), 어제 주사 맞음")
             
-    input_data = CrewInput(initial_message=initial,background_info=TEXT)
+    input_data = CrewInput(initial_message=initial,background_info=TEXT, schedule_info=TEXT)
 
     try:
         Piethon2().crew().kickoff(inputs=input_data.model_dump())

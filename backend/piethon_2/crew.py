@@ -33,6 +33,7 @@ diagnosis_knowledge = PDFKnowledgeSource(
 class CrewInput(BaseModel):
     initial_message: str = Field(..., description="Initial message from the person")
     background_info: dict = Field(..., description="환자의 기본 정보")
+    schedule_info: dict = Field(..., description="예약 가능 날짜 및 예약 상태 데이터")
     sc_data:dict=Field(...,description="환자의 진료 정보")
     
 class SymptomInformationOutput(BaseModel):
@@ -518,6 +519,10 @@ task_explain= Task(
         name="진단 설명 및 초기 질문 답변",
         description=(
             "환자의 증상을 간단하게 요약하고 medical diagnosis를 기반으로 환자가 이해할 수 있도록 진단을 설명하세요."
+            "알림 상태를 기반으로 환자의 다음 행동을 하세요. 환자한테 직접적으로 알림 상태를 언급하지는 말아주세요."
+            "1. Red : 최대한 빨리 병원에 방문하는게 필요한 것과, 의료진에게 연락을 취했으니 의료진과 직접 대화를 해서 치료 일정과 계획을 상의해야한다"
+            "2. Yellow : 빠른 시일 내에 상태 확인을 위해 의료기관 방문이 필요한 상황이므로 {schedule_info}를 고려하여 환자와 예약을 잡아주세요. 예약 가능한 날짜가 없을 경우 의료진이 따로 연락을 취할 예정이라 안내해주세요."
+            "3. Green : 추가 행동 없음. 경과관찰 필요"
             "환자분께 친절하게 설명하는 간호사 어투를 사용하세요."
         ),
         expected_output=(
@@ -526,7 +531,7 @@ task_explain= Task(
         output_json=None,
         agent=agent_explain,
         human_input=False,
-        context = [task_diagnose]
+        context = [task_diagnose, task_send_alert]
     )
 
 task_qna= Task(
@@ -544,7 +549,8 @@ task_qna= Task(
         agent=agent_qna,
         human_input=False,
         tools=[answer_tool],
-        context = [task_diagnose])
+        context = [task_diagnose, task_explain]
+        )
 
 crew= Crew(
         agents=[
@@ -577,8 +583,11 @@ if __name__ == "__main__":
     with open('Carebot_Validation/Y2_Info.json', encoding='utf-8') as f:
         background_info = json.load(f)
 
+    with open('Carebot_Validation/schedule_data.json', encoding='utf-8') as f:
+        schedule_info = json.load(f)
 
-    input_data = CrewInput(initial_message=initial,background_info=background_info,sc_data=sc_data)
+
+    input_data = CrewInput(initial_message=initial,background_info=background_info,sc_data=sc_data,schedule_info=schedule_info)
 
     try:
         crew.kickoff(inputs=input_data.model_dump())
