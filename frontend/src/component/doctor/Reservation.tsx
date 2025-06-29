@@ -5,7 +5,7 @@ import { Calendar } from "../../components/ui/calendar"
 import Picker from 'react-mobile-picker';
 import { useNavigate } from "react-router-dom"
 import { useParams } from "react-router-dom";
-import { dummyPatients } from "../Patient";
+import { dummyPatients } from "../../types/Patient";
 
 export default function AppointmentEditor({ onUpdateReservation }: { onUpdateReservation: (id: number, reservation: { date: string, time: string }) => void }) {
   const { id } = useParams();
