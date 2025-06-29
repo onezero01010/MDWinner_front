@@ -4,12 +4,7 @@ import { Carousel, CarouselContent, CarouselItem } from "../../components/ui/car
 import { CalendarIcon } from 'lucide-react';
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
-
-type ChatMessage = {
-  question: string;
-  answer: string;
-  imageUrl?: string; // 이미지가 있을 경우
-};
+import type { ChatMessage } from '../../types/ChatMessage'; // ChatMessage 타입 정의 import
 
 const StartChat = () => {
   const [inputValue, setInputValue] = useState('');

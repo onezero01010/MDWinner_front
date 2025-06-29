@@ -1,10 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import '../patient/hideScrollbar.css'; // 스크롤바 숨김용 CSS import (없으면 생성)
-
-type ChatMessage = {
-  question: string;
-  answer: string;
-};
+import type { ChatMessage } from '../../types/ChatMessage'; // ChatMessage 타입 import
 
 interface StartChatProps {
     externalMessages?: ChatMessage[];

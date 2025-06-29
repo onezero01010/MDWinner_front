@@ -9,13 +9,9 @@ import Reservation from "./Reservation";
 import ChatLog from "./ChatLog";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { dummyPatients } from "../Patient";
-import type { Patient } from "../Patient";
-
-type ChatMessage = {
-  question: string;
-  answer: string;
-};
+import { dummyPatients } from "../../types/Patient";
+import type { Patient } from "../../types/Patient";
+import type { ChatMessage } from "../../types/ChatMessage";
 
 export default function PatientDetail({ onUpdateReservation }: { onUpdateReservation: (id: number) => void }) {
   // const { id } = useParams<{ id: string }>();const { id } = useParams();
@@ -144,7 +140,7 @@ export default function PatientDetail({ onUpdateReservation }: { onUpdateReserva
           </div>
           {/* Tabs Content */}
           <TabsContent value="info">
-            <div className="p-4">
+            <div className="px-8">
               <Accordion
                 type="multiple"
                 className="w-full space-y-2"
