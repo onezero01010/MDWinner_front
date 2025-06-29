@@ -39,7 +39,7 @@ function App() {
         <Route path="/patient/start-chat" element={<StartChat />} />
         <Route path="/doctor/patient-list" element={<PatientList patients={patients} />} />
         <Route path="/doctor/reservation/:id" element={<Reservation onUpdateReservation={handleUpdateReservation} />} />
-        <Route path="/doctor/patient-detail/:id" element={<PatientDetail />} />
+        <Route path="/doctor/patient-detail/:id" element={<PatientDetail  onUpdateReservation={handleUpdateReservation} />} />
         <Route path="/doctor/calender" element={<Calender />} />
         <Route path="/doctor/setting" element={<Setting />} />
       </Routes>
