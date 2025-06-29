@@ -7,6 +7,9 @@ import os
 import json
 
 
+os.environ["CHROMA_OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = "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"
+
 llm = LLM(
     model="openai/gpt-4o-mini", # call model by provider/model_name
     # model="gemini/gemini-1.5-flash",
@@ -45,6 +48,80 @@ class SymptomInformationOutput(BaseModel):
 
 def ask_human(question) -> str:
     return input(f"\n[AI] {question}\n> ")
+
+
+DATA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../data"))
+
+def ask_human(question) -> str:
+    os.makedirs(DATA_DIR, exist_ok=True)
+
+    ai_txt_path = os.path.join(DATA_DIR, "ai.txt")
+    user_txt_path = os.path.join(DATA_DIR, "user.txt")
+
+    with open(ai_txt_path, "w", encoding="utf-8") as f:
+        f.write(question)
+
+    print(f"\n[AI] 질문을 {ai_txt_path} 에 기록했습니다. front에서 user.txt 에 답변을 저장해 주세요.")
+
+    import time
+
+    user_response = None
+    while user_response is None:
+        if os.path.exists(user_txt_path):
+            with open(user_txt_path, "r", encoding="utf-8") as f:
+                user_response = f.read().strip()
+            open(user_txt_path, "w").close()
+        else:
+            time.sleep(10)
+
+    return user_response
+
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
+
+class UserResponseHandler(FileSystemEventHandler):
+    def __init__(self, user_txt_path):
+        super().__init__()
+        self.user_txt_path = user_txt_path
+        self.response = None
+
+    def on_modified(self, event):
+        if event.src_path == self.user_txt_path:
+            with open(self.user_txt_path, "r", encoding="utf-8") as f:
+                content = f.read().strip()
+                if content:
+                    self.response = content
+                    # 비운다
+                    open(self.user_txt_path, "w").close()
+
+def ask_human(question) -> str:
+    import time
+
+    DATA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../data"))
+    os.makedirs(DATA_DIR, exist_ok=True)
+
+    ai_txt_path = os.path.join(DATA_DIR, "ai.txt")
+    user_txt_path = os.path.join(DATA_DIR, "user.txt")
+
+    with open(ai_txt_path, "w", encoding="utf-8") as f:
+        f.write(question)
+
+    print(f"\n[AI] 질문을 {ai_txt_path} 에 기록했습니다. front에서 user.txt 에 답변을 저장해 주세요.")
+
+    event_handler = UserResponseHandler(user_txt_path)
+    observer = Observer()
+    observer.schedule(event_handler, path=DATA_DIR, recursive=False)
+    observer.start()
+
+    try:
+        while event_handler.response is None:
+            time.sleep(0.1)
+    finally:
+        observer.stop()
+        observer.join()
+
+    return event_handler.response
+
 
 class HumanInputContextToolSchema(BaseModel):
     question: str
@@ -361,7 +438,7 @@ task_diagnose= Task(
         - recommendations: 임상의를 위한 다음 단계 제안
         """,
         agent=agent_diagnosis,
-        context = [task_ask_and_query]
+        context = [task_ask_and_query],
     )
     
 task_send_alert = Task(
@@ -393,7 +470,8 @@ task_send_alert = Task(
         agent=agent_alert,
         context = [task_diagnose]
     )
-    
+
+
 task_summarize_for_doctor=Task(
         description="""
         English: Generate a structured, EMR-ready summary for physician review based on comprehensive patient interaction data, including:
@@ -412,25 +490,25 @@ task_summarize_for_doctor=Task(
         """,
 
         expected_output="""
-        다음을 포함한 간결하고 구조화된 요약:
-        1. 환자 요약:
+        다음을 포함한 간결하고 구조화된 요약 json:
+        환자 요약:
         - 나이, 성별, 진단 이력, 관련 시술 (예: 이전 무릎 수술, 주사)
         
-        2. 주요 증상:
+        주요 증상:
         - 주요 증상 (예: 무릎 통증, 부종, 운동성 감소)
         - 증상 지속 기간, 강도, 시간 경과에 따른 변화
         
-        3. 진단 통찰:
+        진단 통찰:
         - 주의 필요한 주요 임상 소견 및 증상 패턴 (예: 무릎 열감, 24시간 내 급속한 부종 진행, 보행 곤란)
         - 진단 에이전트가 식별한 중요한 증상 클러스터 및 시간적 연관성
         - 즉시 평가가 필요한 임상적 위험 신호 또는 우려되는 증상 조합
         
-        4. 권장 임상 조치:
+        권장 임상 조치:
         - 필요한 즉시 조치 (있는 경우)
         - 제안된 후속 일정 (예: 내일 클리닉 방문)
         - 권장 환자 관리 및 치료 지침 (예: 통증 관리 프로토콜, 냉찜질 빈도)
         
-        5. 알림 수준:
+        알림 수준:
         - 명확하게 표시된 알림 상태 (Red, Yellow, Green) 및 긴급도 수준의 근거
         """,
         agent=agent_doctor_summary,
@@ -497,7 +575,7 @@ crew= Crew(
     )
 
 if __name__ == "__main__":
-    initial = input("\n[System] Please start by introducing symptom:\n> ")
+    initial = ask_human("어떤 문제가 있나요:")
     
     with open('Carebot_Validation/Y2_SC.json', encoding='utf-8') as f:
         sc_data = json.load(f)
@@ -515,3 +593,11 @@ if __name__ == "__main__":
         crew.kickoff(inputs=input_data.model_dump())
     except Exception as e:
         raise Exception(f"An error occurred while running the crew: {e}")
+    
+    dir=os.path.join(DATA_DIR,"doctorsummary.txt")
+    with open(dir, "w", encoding="utf-8") as f:
+        f.write(task_summarize_for_doctor.output.raw)    
+    dir=os.path.join(DATA_DIR,"alert.json")
+    with open(dir, "w", encoding="utf-8") as f:
+        json.dump(task_send_alert.output.json_dict,f)  
+
