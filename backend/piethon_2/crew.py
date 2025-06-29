@@ -588,7 +588,7 @@ crew= Crew(
     )
 
 if __name__ == "__main__":
-    initial = ask_human("어떤 문제가 있나요:")
+    initial = ask_human("안녕하세요, 오늘 어떤 점이 가장 불편하신지 천천히 말씀해 주세요.")
     
     with open('Carebot_Validation/Y2_SC.json', encoding='utf-8') as f:
         sc_data = json.load(f)
