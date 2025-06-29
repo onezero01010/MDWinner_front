@@ -140,7 +140,7 @@ export default function PatientDetail({ onUpdateReservation }: { onUpdateReserva
           </div>
           {/* Tabs Content */}
           <TabsContent value="info">
-            <div className="p-4">
+            <div className="px-8">
               <Accordion
                 type="multiple"
                 className="w-full space-y-2"
