@@ -43,7 +43,7 @@ export default function PatientListPage({
     <div className="w-full h-screen bg-gray-100 flex flex-col">
       {/* Header */}
       <div className="p-4 bg-white shadow flex items-center gap-2">
-        <img src="/LogoName.svg" className="mt-2 h-10" alt="logo" />
+        <img src="/CAREBOT.svg" className="mt-2 h-10" alt="logo" />
       </div>
 
       {/* Tabs */}

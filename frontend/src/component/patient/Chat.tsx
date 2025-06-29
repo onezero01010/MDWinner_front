@@ -20,6 +20,8 @@ const StartChat = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
+  const [showFontSlider, setShowFontSlider] = useState(false);
+  const [chatFontSize, setChatFontSize] = useState(16); // 기본값(px)
 
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,7 +60,12 @@ const StartChat = () => {
     };
     setMessages([...messages, newMessage]);
     setInputValue("");
-    setFile(null); // 파일 첨부도 초기화(필요시)
+    setFile(null);
+    inputRef.current?.focus();
+  };
+
+  const handleQuickInsert = (text: string) => {
+    setInputValue(text);
     inputRef.current?.focus();
   };
 
@@ -74,7 +81,7 @@ const StartChat = () => {
       {/* 상단 로고 + 진행률 바 (고정) */}
       <div className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white z-20 pt-8">
         <div className="flex flex-row items-center justify-between w-full px-6">
-          <img src="/LogoName.svg" alt="Logo" className="h-10" onClick={() => setMessages([])} style={{ cursor: 'pointer' }} />
+          <img src="/CAREBOT.svg" alt="Logo" className="h-10" onClick={() => setMessages([])} style={{ cursor: 'pointer' }} />
           <img src="/Hamburger.svg" alt="Menu" className="h-8 cursor-pointer" onClick={() => setIsMenuOpen(true)} />
         </div>
         {/* 진행률 바 */}
@@ -104,12 +111,15 @@ const StartChat = () => {
               안녕하세요, 송원영님!<br /><br />
               혹시 문제가 있다면 저에게 말씀해주시면 적절한 대응 방법을 알려드릴 수 있어요!
             </div>
-            <div className="w-full flex justify-center items-center py-4 mt-6">
+            <div className="w-full flex justify-center items-center">
               <div className="max-w-full w-full">
               <Carousel>
                 <CarouselContent className="gap-4">
-                  <CarouselItem className="flex justify-center">
-                    <div className="w-80 h-80 bg-lightPurple border border-gray-200 rounded-2xl shadow-xl p-5 flex flex-col justify-between text-center transition hover:shadow-2xl">
+                  <CarouselItem className="flex justify-center py-8">
+                    <div
+                      className="w-80 h-80 bg-lightPurple border border-gray-200 rounded-2xl shadow-xl p-5 flex flex-col justify-between text-center transition cursor-pointer"
+                      onClick={() => handleQuickInsert("6월 25일 / 퇴행성 관절염 / 양측 주사 치료")}
+                    >
                       {/* 날짜와 아이콘 */}
                       <div className="flex items-center justify-center gap-2 text-purple font-semibold text-lg">
                         <CalendarIcon className="w-5 h-5" />
@@ -128,8 +138,11 @@ const StartChat = () => {
                     </div>
                   </CarouselItem>
 
-                  <CarouselItem className="flex justify-center">
-                    <div className="w-80 h-80 bg-lightPurple border border-gray-200 rounded-2xl shadow-xl p-5 flex flex-col justify-between text-center transition hover:shadow-2xl">
+                  <CarouselItem className="flex justify-center py-8">
+                    <div
+                      className="w-80 h-80 bg-lightPurple border border-gray-200 rounded-2xl shadow-xl p-5 flex flex-col justify-between text-center transition cursor-pointer"
+                      onClick={() => handleQuickInsert("6월 20일 / 슬관절염 / 비스테로이드성 소염진통제 처방")}
+                    >
                       <div className="flex items-center justify-center gap-2 text-purple font-semibold text-lg">
                         <CalendarIcon className="w-5 h-5" />
                         <span>6월 20일</span>
@@ -156,7 +169,9 @@ const StartChat = () => {
               <React.Fragment key={idx}>
                 {/* 내 메시지(오른쪽, 흰색) */}
                 <div className="flex justify-end">
-                  <div className="bg-white text-gray-900 rounded-2xl rounded-tr-md px-4 py-2 shadow border border-gray max-w-[70%] flex flex-col items-end">
+                  <div className="bg-white text-gray-900 rounded-2xl rounded-tr-md px-4 py-2 shadow border border-gray max-w-[70%] flex flex-col items-end"
+                    style={{ fontSize: chatFontSize }}
+                  >
                     {msg.question}
                     {msg.imageUrl && (
                       <img
@@ -172,6 +187,7 @@ const StartChat = () => {
                   <div 
                   className="bg-purple text-white rounded-2xl rounded-tl-md px-4 py-2 shadow max-w-[70%]"
                   ref={idx === messages.length - 1 ? lastMessageRef : null}
+                  style={{ fontSize: chatFontSize }}
                   >
                     {msg.answer}
                   </div>
@@ -182,7 +198,7 @@ const StartChat = () => {
         )}
       </div>
       {/* 하단 고정 입력창/버튼 */}
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full bg-transparent px-4 pb-4 pt-1 flex flex-col gap-2 z-10">
+      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full bg-white px-4 pb-4 pt-1 flex flex-col gap-2 z-10">
         {file && (
           <div className="mt-2 flex flex-col items-center">
             <span className="text-sm text-gray-600">{file.name}</span>
@@ -195,13 +211,13 @@ const StartChat = () => {
           <>
             <div className="overflow-x-auto whitespace-nowrap hide-scrollbar">
               <button
-                className="inline-block bg-transparent border border-gray rounded-full px-4 py-2 text-sm shadow-sm mx-2"
+                className="inline-block bg-white border border-gray rounded-full px-4 py-2 text-sm shadow-sm mx-2"
                 onClick={() => handleQuickSend("체온 올리는 법, 열도 동반인가요?")}
               >
                 체온 올리는 법, 열도 동반인가요?
               </button>
               <button
-                className="inline-block bg-transparent border border-gray rounded-full px-4 py-2 text-sm shadow-sm mx-2"
+                className="inline-block bg-white border border-gray rounded-full px-4 py-2 text-sm shadow-sm mx-2"
                 onClick={() => handleQuickSend("이런 복약방법은 어떤 것이 있나요?")}
               >
                 이런 복약방법은 어떤 것이 있나요?
@@ -265,7 +281,7 @@ const StartChat = () => {
           <img
             src="/x.png"
             alt="닫기"
-            className="absolute top-4 right-4 w-6 h-6 cursor-pointer mt-6 mr-4"
+            className="absolute top-4 right-[3%] w-[5%] cursor-pointer mt-6 mr-4"
             onClick={() => setIsMenuOpen(false)}
           />
           {/* 패널 내용 */}
@@ -273,7 +289,25 @@ const StartChat = () => {
             <h2 className="text-xl font-bold mb-4">안녕하세요, 송원영님!</h2>
             <ul className="space-y-4">
               <li>개인 정보 수정</li>
-              <li>글씨 크기 조정</li>
+              <li
+                className="cursor-pointer"
+                onClick={() => setShowFontSlider((prev) => !prev)}
+              >
+                글씨 크기 조정
+              </li>
+              {showFontSlider && (
+                <div className="mt-4 flex flex-col items-center">
+                  <input
+                    type="range"
+                    min={12}
+                    max={28}
+                    value={chatFontSize}
+                    onChange={e => setChatFontSize(Number(e.target.value))}
+                    className="w-40 h-2 bg-gray-200 rounded-lg appearance-lightPurple cursor-pointer"
+                  />
+                  <span className="text-xs mt-2 text-purple-600 font-medium">{chatFontSize}px</span>
+                </div>
+              )}
               <li>읽어주기 모드</li>
             </ul>
           </div>

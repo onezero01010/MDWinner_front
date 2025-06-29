@@ -36,7 +36,7 @@ const StartChat: React.FC<StartChatProps> = ({externalMessages}) => {
       {/* 중앙 안내/채팅 영역 (스크롤) */}
       <div
         ref={chatRef}
-        className="flex-1 min-h-0 flex flex-col items-start justify-start w-full pt-4 overflow-y-auto mb-8"
+        className="flex-1 min-h-0 flex flex-col items-start justify-start w-full pt-4 overflow-y-auto overflow-x-hidden mb-8"
         style={{ paddingTop: '120px', paddingBottom: messages.length === 0 ? '120px' : '80px' }}
       >
         
