@@ -1,0 +1,44 @@
+{
+  "schedule": [
+    {
+      "date": "2025-07-01",
+      "slots": [
+        {
+          "start": "09:00",
+          "end": "09:30",
+          "status": "available"
+        },
+        {
+          "start": "09:30",
+          "end": "10:00",
+          "status": "booked"
+        }
+      ]
+    },
+    {
+      "date": "2025-07-02",
+      "slots": [
+        {
+          "start": "14:00",
+          "end": "14:30",
+          "status": "available"
+        },
+        {
+          "start": "14:30",
+          "end": "15:00",
+          "status": "available"
+        }
+      ]
+    },
+    {
+      "date": "2025-07-03",
+      "slots": [
+        {
+          "start": "16:00",
+          "end": "16:30",
+          "status": "unavailable"
+        }
+      ]
+    }
+  ]
+}
