@@ -7,7 +7,10 @@ export default {
     "./src/components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-  	extend: {
+  	fontFamily: {
+		sans: ["Pretendard Variable", "sans-serif"],
+	},
+	extend: {
   		colors: {
   			purple: '#8E34FB',
   			gray: '#DBDADA',
@@ -52,7 +55,7 @@ export default {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
-  			}
+  			},
   		},
   		borderRadius: {
   			lg: 'var(--radius)',

@@ -15,7 +15,7 @@ import PatientDetail from './component/doctor/PatientDetail';
 import Calender from './component/doctor/Calender';
 import { Toaster } from 'sonner';
 import Setting from './component/doctor/Setting';
-import { dummyPatients } from './component/Patient';
+import { dummyPatients } from './types/Patient';
 
 
 function App() {

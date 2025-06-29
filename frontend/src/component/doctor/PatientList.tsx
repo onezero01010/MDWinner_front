@@ -6,8 +6,8 @@ import { Button } from "../../components/ui/button";
 import { ScrollArea } from "../../components/ui/scroll-area";
 import { Star, Calendar, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import type { Patient } from "../Patient";
-import { dummyPatients } from "../Patient";
+import type { Patient } from "../../types/Patient";
+import { dummyPatients } from "../../types/Patient";
 import { Flipper, Flipped } from "react-flip-toolkit";
 
 export default function PatientListPage({
