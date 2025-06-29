@@ -216,7 +216,7 @@ export default function PatientListPage({
                             className="flex-1 min-w-0 px-2 rounded-lg"
                             onClick={(e) => {
                               e.stopPropagation();
-                              navigate("/doctor/reservation");
+                              navigate(`/doctor/reservation/${patient.id}`);
                             }}
                           >
                             예약 변경

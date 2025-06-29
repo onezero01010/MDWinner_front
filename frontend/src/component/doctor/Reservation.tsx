@@ -95,6 +95,7 @@ export default function AppointmentEditor({ onUpdateReservation }: { onUpdateRes
 
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-sm bg-white px-6 pb-4 flex justify-between gap-4 z-10">
         <Button
+          className="w-full mb-2"
           onClick={() => {
             handleChange();
             navigate("/doctor/patient-list");
@@ -102,7 +103,12 @@ export default function AppointmentEditor({ onUpdateReservation }: { onUpdateRes
         >
           변경
         </Button>
-        <Button variant="outline" className="w-full mb-2" onClick={() => navigate('/doctor/patient-list')}>취소</Button>
+        <Button
+          variant="outline"
+          onClick={() => navigate('/doctor/patient-list')}
+        >
+          취소
+        </Button>
       </div>
     </div>
   )

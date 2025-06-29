@@ -78,23 +78,32 @@ const StartChat = () => {
   
   return (
     <div className="w-full min-h-screen flex flex-col bg-white pt-8 pb-4">
-      {/* 상단 로고 + 진행률 바 (고정) */}
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white z-20 pt-8">
-        <div className="flex flex-row items-center justify-between w-full px-6">
-          <img src="/CAREBOT.svg" alt="Logo" className="h-10" onClick={() => setMessages([])} style={{ cursor: 'pointer' }} />
-          <img src="/Hamburger.svg" alt="Menu" className="h-8 cursor-pointer" onClick={() => setIsMenuOpen(true)} />
+      {/* 상단 헤더(로고 + 진행률 바) */}
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-md z-20 pt-0 shadow-md border-b border-gray-200 bg-white">
+        <div className="relative flex items-center justify-center w-full h-16 bg-white">
+          <div className="absolute left-6 top-1/2 -translate-y-1/2">
+            {/* 좌측 공간 확보용, 필요시 아이콘/버튼 배치 */}
+          </div>
+          <div className="flex flex-col items-center justify-center w-full">
+            <img src="/CAREBOT.svg" alt="Logo" className="h-10 mx-auto" style={{ cursor: 'pointer' }} onClick={() => setMessages([])} />
+          </div>
+          <img
+            src="/Hamburger.svg"
+            alt="Menu"
+            className="absolute right-6 top-1/2 -translate-y-1/2 h-6 w-6 cursor-pointer"
+            onClick={() => setIsMenuOpen(true)}
+          />
         </div>
-        {/* 진행률 바 */}
         {messages.length > 0 && (      
           <div className="flex flex-col items-center w-full">
-            <div className="w-80 h-2 bg-gray rounded-full mt-8 mb-2 mx-auto">
+            <div className="text-sm font-bold text-gray-500 mt-2 mb-1 text-left w-80 mx-auto">
+              필요한 정보를 채워나가고 있어요.
+            </div>
+            <div className="w-80 h-2 bg-gray rounded-full mt-1 mb-3 mx-auto">
               <div
                 className="h-2 bg-purple rounded-full transition-all duration-300"
                 style={{ width: `${Math.min((messages.length * 2) * 10, 100)}%` }}
               />
-            </div>
-            <div className="text-sm text-gray-500 mt-2 text-center w-80 mx-auto mb-2">
-              추가 정보를 수집 중입니다.
             </div>
           </div>
         )}
@@ -103,7 +112,7 @@ const StartChat = () => {
       <div
         ref={chatRef}
         className="flex-1 min-h-0 flex flex-col items-start justify-start w-full pt-4 overflow-y-auto mb-8 mt-2"
-        style={{ paddingTop: '120px', paddingBottom: messages.length === 0 ? '120px' : '80px' }}
+        style={{ paddingTop: '100px', paddingBottom: messages.length === 0 ? '120px' : '80px' }}
       >
         {messages.length === 0 ? (
           <>
@@ -113,53 +122,69 @@ const StartChat = () => {
             </div>
             <div className="w-full flex justify-center items-center">
               <div className="max-w-full w-full">
-              <Carousel>
-                <CarouselContent className="gap-4">
-                  <CarouselItem className="flex justify-center py-8">
-                    <div
-                      className="w-80 h-80 bg-lightPurple border border-gray-200 rounded-2xl shadow-xl p-5 flex flex-col justify-between text-center transition cursor-pointer"
-                      onClick={() => handleQuickInsert("6월 25일 / 퇴행성 관절염 / 양측 주사 치료")}
-                    >
-                      {/* 날짜와 아이콘 */}
-                      <div className="flex items-center justify-center gap-2 text-purple font-semibold text-lg">
-                        <CalendarIcon className="w-5 h-5" />
-                        <span>6월 25일</span>
-                      </div>
-
-                      {/* 질병명 */}
-                      <div className="text-xl font-bold text-gray-800 mt-4">
-                        퇴행성 관절염
-                      </div>
-
-                      {/* 치료 정보 */}
-                      <div className="text-base text-gray-600">
-                        양측 주사 치료
-                      </div>
-                    </div>
-                  </CarouselItem>
-
-                  <CarouselItem className="flex justify-center py-8">
-                    <div
-                      className="w-80 h-80 bg-lightPurple border border-gray-200 rounded-2xl shadow-xl p-5 flex flex-col justify-between text-center transition cursor-pointer"
-                      onClick={() => handleQuickInsert("6월 20일 / 슬관절염 / 비스테로이드성 소염진통제 처방")}
-                    >
-                      <div className="flex items-center justify-center gap-2 text-purple font-semibold text-lg">
-                        <CalendarIcon className="w-5 h-5" />
-                        <span>6월 20일</span>
-                      </div>
-
-                      <div className="text-xl font-bold text-gray-800 mt-4">
-                        슬관절염
-                      </div>
-
-                      <div className="text-base text-gray-600">
-                        비스테로이드성 소염진통제 처방
-                      </div>
-
-                    </div>
-                  </CarouselItem>
-                </CarouselContent>
-              </Carousel>
+                {/* Carousel 데이터 기반 렌더링 */}
+                <Carousel>
+                  <CarouselContent className="mr-4 gap-4">
+                    {[
+                      {
+                        date: "6월 25일",
+                        disease: "퇴행성 관절염",
+                        treatment: "양측 주사 치료",
+                        quickText: "6월 25일 / 퇴행성 관절염 / 양측 주사 치료"
+                      },
+                      {
+                        date: "6월 20일",
+                        disease: "슬관절염",
+                        treatment: "비스테로이드성 소염진통제 처방",
+                        quickText: "6월 20일 / 슬관절염 / 비스테로이드성 소염진통제 처방"
+                      },
+                      {
+                        date: "6월 20일",
+                        disease: "슬관절염",
+                        treatment: "비스테로이드성 소염진통제 처방",
+                        quickText: "6월 20일 / 슬관절염 / 비스테로이드성 소염진통제 처방"
+                      },
+                      {
+                        date: "6월 20일",
+                        disease: "슬관절염",
+                        treatment: "비스테로이드성 소염진통제 처방",
+                        quickText: "6월 20일 / 슬관절염 / 비스테로이드성 소염진통제 처방"
+                      }
+                      // 필요한 만큼 데이터 추가
+                    ].map((item, idx, arr) => {
+                      let marginLeft = 0;
+                      let marginRight = 12;
+                      if (idx === 0) marginLeft = 48; // 맨 왼쪽
+                      if (idx === arr.length - 1) marginRight = 48; // 맨 오른쪽
+                      
+                      return(
+                      <CarouselItem
+                        className="flex justify-center py-8"
+                        style={{ minWidth: 200, maxWidth: 240, marginLeft, marginRight }}
+                        key={idx}>
+                          <div
+                            className="w-80 bg-lightPurple border border-gray-200 rounded-2xl shadow-xl p-5 flex flex-col justify-between text-center transition cursor-pointer"
+                            onClick={() => handleQuickInsert(item.quickText)}
+                          >
+                            {/* 날짜와 아이콘 */}
+                            <div className="flex items-center justify-center gap-2 text-purple font-semibold text-lg">
+                              <CalendarIcon className="w-5 h-5" />
+                              <span>{item.date}</span>
+                            </div>
+                            {/* 질병명 */}
+                            <div className="text-xl font-bold text-gray-800 mt-4">
+                              {item.disease}
+                            </div>
+                            {/* 치료 정보 */}
+                            <div className="text-base text-gray-600">
+                              {item.treatment}
+                            </div>
+                          </div>
+                        </CarouselItem>
+                      );
+        })}
+                  </CarouselContent>
+                </Carousel>
               </div>
             </div>
           </>
@@ -183,7 +208,7 @@ const StartChat = () => {
                   </div>
                 </div>
                 {/* 답변(왼쪽, 보라색) */}
-                <div className="flex justify-start">
+                <div className="flex justify-start mt-2">
                   <div 
                   className="bg-purple text-white rounded-2xl rounded-tl-md px-4 py-2 shadow max-w-[70%]"
                   ref={idx === messages.length - 1 ? lastMessageRef : null}
@@ -198,7 +223,7 @@ const StartChat = () => {
         )}
       </div>
       {/* 하단 고정 입력창/버튼 */}
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full bg-white px-4 pb-4 pt-1 flex flex-col gap-2 z-10">
+      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full px-4 pb-4 pt-1 flex flex-col gap-2 z-10">
         {file && (
           <div className="mt-2 flex flex-col items-center">
             <span className="text-sm text-gray-600">{file.name}</span>
@@ -243,7 +268,7 @@ const StartChat = () => {
             <Input
               type="text"
               placeholder="메시지를 입력하세요"
-              className="h-12 w-full border border-gray rounded-full pl-14 pr-4 focus:outline-none focus:ring-2 focus:ring-purple text-base"
+              className="h-12 w-full border bg-white border-gray rounded-full pl-14 pr-4 focus:outline-none focus:ring-2 focus:ring-purple text-base"
               value={inputValue}
               onChange={handleInputChange}
               onKeyDown={e => {

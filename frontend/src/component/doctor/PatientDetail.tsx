@@ -165,6 +165,14 @@ export default function PatientDetail({ onUpdateReservation }: { onUpdateReserva
                     </ul>
                   </AccordionContent>
                 </AccordionItem>
+                <AccordionItem value="lastorder">
+                  <AccordionTrigger className="text-base font-bold border-b-0 hover:no-underline focus:no-underline">
+                    최근 처방
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    {/* 최근 처방 내용 */}
+                  </AccordionContent>
+                </AccordionItem>
                 <AccordionItem value="history">
                   <AccordionTrigger className="text-base font-bold border-b-0 hover:no-underline focus:no-underline">
                     현병력
