@@ -4,8 +4,12 @@ import { Calendar } from "../../components/ui/calendar"
 // import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select"
 import Picker from 'react-mobile-picker';
 import { useNavigate } from "react-router-dom"
+import { useParams } from "react-router-dom";
+import { dummyPatients } from "../Patient";
 
-export default function AppointmentEditor({ setAppointment }: { setAppointment: (appointment: { date: string, time: string }) => void }) {
+export default function AppointmentEditor({ onUpdateReservation }: { onUpdateReservation: (id: number, reservation: { date: string, time: string }) => void }) {
+  const { id } = useParams();
+  const patient = dummyPatients.find(p => p.id === Number(id));
   const [date, setDate] = useState<Date | undefined>(new Date("2024-06-26"))
   const [value, setValue] = useState({
     hour: '08',
@@ -21,7 +25,8 @@ export default function AppointmentEditor({ setAppointment }: { setAppointment: 
     const dateStr = date ? date.toISOString().slice(0, 10) : "";
     // 시간 포맷: HH:MM AM/PM
     const timeStr = `${value.hour}:${value.minute} ${value.ampm}`;
-    setAppointment({ date: dateStr, time: timeStr });
+    // setAppointment({ date: dateStr, time: timeStr });
+    onUpdateReservation(patient?.id || 0, { date: dateStr, time: timeStr });
     navigate("/doctor/patient-list");
   };
 
@@ -66,7 +71,7 @@ export default function AppointmentEditor({ setAppointment }: { setAppointment: 
             <Picker
               value={value}
               onChange={setValue}
-              className="flex gap-12 bg-white border rounded-md shadow-lg p-2"
+              className="flex gap-12 bg-white border rounded-md shadow-lg px-2"
             >
               <Picker.Column name="hour">
                 {['01','02','03','04','05','06','07','08','09','10','11','12'].map(h => (

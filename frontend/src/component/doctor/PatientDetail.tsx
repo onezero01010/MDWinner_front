@@ -10,13 +10,14 @@ import ChatLog from "./ChatLog";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { dummyPatients } from "../Patient";
+import type { Patient } from "../Patient";
 
 type ChatMessage = {
   question: string;
   answer: string;
 };
 
-export default function PatientDetail() {
+export default function PatientDetail({ onUpdateReservation }: { onUpdateReservation: (id: number) => void }) {
   // const { id } = useParams<{ id: string }>();const { id } = useParams();
     const { id } = useParams();
     console.log("받은 id:", id);
@@ -28,7 +29,6 @@ export default function PatientDetail() {
     // const [tooltipOpen, setTooltipOpen] = useState(false);
     const [tab, setTab] = useState("info");
     // 예약 정보 상태 추가
-    const [_, setAppointment] = useState({ date: "2024-06-26", time: "08:00 PM" });
     // const tooltipTimeout = useRef<NodeJS.Timeout | null>(null);
     const navigate = useNavigate();
 
@@ -154,7 +154,7 @@ export default function PatientDetail() {
             </div>
           </TabsContent>
           <TabsContent value="reservation">
-            <Reservation setAppointment={setAppointment} />
+            <Reservation onUpdateReservation={onUpdateReservation} />
           </TabsContent>
           <TabsContent value="chat">
             <ChatLog externalMessages={chatLog}/>
