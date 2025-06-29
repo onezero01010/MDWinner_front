@@ -10,7 +10,9 @@ import ChatLog from "./ChatLog";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { dummyPatients } from "../../types/Patient";
+import { dummyPatientDetails } from "../../types/Patient";
 import type { Patient } from "../../types/Patient";
+import type { PatientDetail } from "../../types/Patient";
 import type { ChatMessage } from "../../types/ChatMessage";
 
 export default function PatientDetail({ onUpdateReservation }: { onUpdateReservation: (id: number) => void }) {
@@ -18,6 +20,7 @@ export default function PatientDetail({ onUpdateReservation }: { onUpdateReserva
     const { id } = useParams();
     console.log("받은 id:", id);
     const patient = dummyPatients.find(p => p.id === Number(id));
+    const patientDetail = dummyPatientDetails.find(d => d.id === Number(id));
     const [chatLog] = useState<ChatMessage[]>([ 
         {question: "안녕하세요", answer: "네, 안녕하세요!"}
     ]);
@@ -144,53 +147,65 @@ export default function PatientDetail({ onUpdateReservation }: { onUpdateReserva
               <Accordion
                 type="multiple"
                 className="w-full space-y-2"
-                defaultValue={["symptom"]}
+                defaultValue={["summary"]}
               >
-                <AccordionItem value="symptom">
+                {/* 1. 환자 요약 */}
+                <AccordionItem value="summary">
                   <AccordionTrigger className="text-base font-bold border-b-0 hover:no-underline focus:no-underline">
-                    증상
+                    환자 요약
                   </AccordionTrigger>
                   <AccordionContent>
                     <ul className="list-disc pl-5 text-sm space-y-1">
-                      <li>증상 발생 시점</li>
-                      <li>증상 위치</li>
-                      <li>증상 지속 시간</li>
-                      <li>경과 과정</li>
-                      <li>이전 증상 발생 여부</li>
-                      <li>증상 특성(색, 양, 세기)</li>
+                      {patientDetail?.clinical_summary
+                        ? patientDetail.clinical_summary.split(". ").filter(Boolean).map((line, idx) => (
+                            <li key={idx}>{line.trim().replace(/\.$/, "")}</li>
+                          ))
+                        : <li>상세 요약 정보가 없습니다.</li>
+                      }
                     </ul>
                   </AccordionContent>
                 </AccordionItem>
-                <AccordionItem value="lastorder">
+                {/* 2. 감별진단 */}
+                <AccordionItem value="differential">
                   <AccordionTrigger className="text-base font-bold border-b-0 hover:no-underline focus:no-underline">
-                    최근 처방
+                    감별진단
                   </AccordionTrigger>
                   <AccordionContent>
-                    {/* 최근 처방 내용 */}
+                    <ul className="list-disc pl-5 text-sm space-y-2">
+                      {patientDetail?.differential_diagnosis?.map((item, idx) => (
+                        <li key={idx}>
+                          {item.condition} ({item.likelihood})<br />
+                          <span className="text-gray-400 text-xs">{item.rationale}</span>
+                        </li>
+                      )) || <li>감별진단 정보가 없습니다.</li>}
+                    </ul>
                   </AccordionContent>
                 </AccordionItem>
-                <AccordionItem value="history">
-                  <AccordionTrigger className="text-base font-bold border-b-0 hover:no-underline focus:no-underline">
-                    현병력
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    {/* 현병력 내용 */}
-                  </AccordionContent>
-                </AccordionItem>
+                {/* 3. 현병력: 삭제 */}
+                {/* 4. 주의가 필요한 소견 */}
                 <AccordionItem value="warning">
                   <AccordionTrigger className="text-base font-bold border-b-0 hover:no-underline focus:no-underline">
                     주의가 필요한 소견
                   </AccordionTrigger>
                   <AccordionContent>
-                    {/* 주의가 필요한 소견 내용 */}
+                    <ul className="list-disc pl-5 text-sm space-y-1">
+                      {patientDetail?.red_flags?.map((flag, idx) => (
+                        <li key={idx}>{flag}</li>
+                      )) || <li>특이 소견 없음</li>}
+                    </ul>
                   </AccordionContent>
                 </AccordionItem>
+                {/* 5. 권장 조치 */}
                 <AccordionItem value="recommendation">
                   <AccordionTrigger className="text-base font-bold border-b-0 hover:no-underline focus:no-underline">
                     권장 조치
                   </AccordionTrigger>
                   <AccordionContent>
-                    {/* 권장 조치 내용 */}
+                    <ul className="list-disc pl-5 text-sm space-y-1">
+                      {patientDetail?.recommendations?.map((rec, idx) => (
+                        <li key={idx}>{rec}</li>
+                      )) || <li>권장 조치 없음</li>}
+                    </ul>
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>

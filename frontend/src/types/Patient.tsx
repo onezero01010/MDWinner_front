@@ -16,6 +16,18 @@ export interface Patient {
   emergency: 0 | 1 | 2; // 0: 기타, 1: 경증, 2: 응급
 }
 
+export interface PatientDetail {
+  id: number;
+  differential_diagnosis: {
+    condition: string;
+    likelihood: string;
+    rationale: string;
+  }[];
+  clinical_summary: string;
+  red_flags: string[];
+  recommendations: string[];
+}
+
 // 더미 데이터 export
 export const dummyPatients: Patient[] = [
   // emergency: 2 (응급)
@@ -213,4 +225,45 @@ export const dummyPatients: Patient[] = [
     read: true,
     emergency: 0,
   },
+];
+
+export const dummyPatientDetails: PatientDetail[] = [
+{
+  id: 1,
+  differential_diagnosis: [
+    {
+      condition: "Post-injection flare of osteoarthritis",
+      likelihood: "High",
+      rationale: "The patient received a corticosteroid injection for knee osteoarthritis, and the onset of pain after the injection is consistent with a post-injection flare, which can occur due to inflammatory responses or irritation from the injection itself.",
+    },
+    {
+      condition: "Subchondral insufficiency fracture",
+      likelihood: "Moderate",
+      rationale: "Given the patient's age and the KL grade of 3, there is a risk of subchondral insufficiency fractures, especially after intra-articular injections. The character of the pain and its onset after the injection raises suspicion for this condition.",
+    },
+    {
+      condition: "Infection (septic arthritis)",
+      likelihood: "Low",
+      rationale: "While infection is a potential complication of joint injections, the absence of systemic symptoms (fever, chills) and the nature of the pain makes this less likely. However, it should not be completely ruled out given the recent injection.",
+    },
+    {
+      condition: "Meniscal tear or cartilage injury",
+      likelihood: "Low",
+      rationale: "The patient's pain could also be related to a meniscal tear or exacerbation of cartilage injury, particularly if there was pre-existing damage. However, the lack of mechanical symptoms (locking, catching) makes this less likely.",
+    },
+  ],
+  clinical_summary:
+    "The patient is a 68-year-old female who has developed moderate, aching pain in the left knee after receiving a corticosteroid injection for osteoarthritis. The pain is described as constant and worsens with movement, improving with rest. The KL grade of 3 indicates moderate osteoarthritis, which is consistent with her treatment history. The timing of the pain onset suggests a possible post-injection flare, which is a recognized phenomenon following corticosteroid injections. Given the patient's age and the nature of her symptoms, there is also a concern for potential complications such as subchondral insufficiency fractures or infection.",
+  red_flags: [
+    "Increased pain after injection",
+    "Persistent pain despite rest",
+    "Pain that does not respond to analgesics",
+  ],
+  recommendations: [
+    "Consider imaging studies (X-ray or MRI) to evaluate for subchondral insufficiency fractures or other structural changes in the knee.",
+    "Monitor for signs of infection, such as fever or increased swelling, and consider aspiration of the joint if symptoms worsen.",
+    "Reassess pain management strategies, including the potential need for additional analgesics or alternative therapies.",
+    "Schedule a follow-up appointment to evaluate the response to any new interventions and to monitor the progression of symptoms.",
+  ],
+}
 ];
